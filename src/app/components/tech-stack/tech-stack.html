@@ -1,0 +1,15 @@
+<section class="tech-stack">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Technologies</span>
+      <h2>Our Tech <span class="gradient-text">Stack</span></h2>
+      <p>We use the latest technologies to build robust solutions</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-item" *ngFor="let tech of technologies">
+        <i [class]="tech.icon" [style.color]="tech.color"></i>
+        <span>{{ tech.name }}</span>
+      </div>
+    </div>
+  </div>
+</section>

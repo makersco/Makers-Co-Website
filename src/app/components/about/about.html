@@ -1,0 +1,40 @@
+<section id="about" class="about">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-text">
+        <span class="section-badge">About Us</span>
+        <h2>Building the <span class="gradient-text">Future</span> of Business Technology</h2>
+        <p>We are a passionate team of developers and technology enthusiasts dedicated to helping businesses thrive in the digital age. With expertise in Flutter development, AI/ML integration, and business solutions, we deliver cutting-edge software that drives real results.</p>
+        <p>Our focus on the F&B and retail industries has given us deep insights into the unique challenges these sectors face. We don't just build software – we build partnerships that help your business grow.</p>
+        <div class="about-features">
+          <div class="about-feature" *ngFor="let feature of features">
+            <i class="fas" [ngClass]="feature.icon"></i>
+            <div>
+              <h4>{{ feature.title }}</h4>
+              <p>{{ feature.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-image">
+        <div class="about-card">
+          <div class="about-card-content">
+            <i class="fas fa-quote-left"></i>
+            <p>"Turning innovative ideas into powerful digital solutions that transform businesses."</p>
+            <div class="about-card-footer">
+              <div class="card-author">
+                <div class="author-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h5>Makers Co Team</h5>
+                  <span>Your Technology Partner</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

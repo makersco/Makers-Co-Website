@@ -1,0 +1,83 @@
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <span class="section-badge">Get In Touch</span>
+        <h2>Let's Start Your <span class="gradient-text">Project</span></h2>
+        <p>Ready to transform your business? Reach out to us and let's discuss how we can help you achieve your goals.</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <h4>Email Us</h4>
+              <p>contact&#64;techsolutions.com</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div>
+              <h4>Call Us</h4>
+              <p>+60 12-345 6789</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-location-dot"></i>
+            </div>
+            <div>
+              <h4>Visit Us</h4>
+              <p>Kuala Lumpur, Malaysia</p>
+            </div>
+          </div>
+        </div>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="contact-form-wrapper">
+        <form class="contact-form" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" [(ngModel)]="formData.name" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" [(ngModel)]="formData.email" placeholder="john&#64;example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="service">Service Interested In</label>
+            <select id="service" name="service" [(ngModel)]="formData.service" required>
+              <option value="">Select a service</option>
+              <option value="pos">POS System</option>
+              <option value="inventory">Inventory Management System</option>
+              <option value="fnb">F&B App Development</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" [(ngModel)]="formData.message" rows="4" placeholder="Tell us about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" [disabled]="isSubmitting">
+            <span>{{ isSubmitting ? 'Sending...' : 'Send Message' }}</span>
+            <i class="fas" [ngClass]="isSubmitting ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Notification -->
+<div class="notification" [class.success]="notification.type === 'success'" [class.error]="notification.type === 'error'" *ngIf="notification.show">
+  <i class="fas" [ngClass]="notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
+  <span>{{ notification.message }}</span>
+  <button class="notification-close" (click)="closeNotification()"><i class="fas fa-times"></i></button>
+</div>
