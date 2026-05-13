@@ -554,29 +554,56 @@
       </p> -->
     </div>
 
-    <!-- Today's designs grid -->
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-10">
+      <button onclick="filterDesigns('all')" data-type="all"
+        class="designs-tab builds-tab active-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        All
+      </button>
+      <button onclick="filterDesigns('storefront')" data-type="storefront"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-store mr-1"></i>Storefront
+      </button>
+      <button onclick="filterDesigns('product-page')" data-type="product-page"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-tag mr-1"></i>Product Page
+      </button>
+      <button onclick="filterDesigns('checkout')" data-type="checkout"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-credit-card mr-1"></i>Checkout
+      </button>
+      <button onclick="filterDesigns('dashboard')" data-type="dashboard"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-chart-bar mr-1"></i>Dashboard
+      </button>
+      <button onclick="filterDesigns('campaign')" data-type="campaign"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-fire mr-1"></i>Campaign
+      </button>
+    </div>
+
+    <!-- Designs grid -->
     <div id="designs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8"></div>
     <div id="designs-loading" class="text-center py-12">
       <i class="fas fa-spinner fa-spin text-pink-400 text-2xl mb-3 block"></i>
       <p class="text-gray-500 text-sm">Loading today's designs...</p>
     </div>
-    <!-- <div id="designs-empty" class="hidden text-center py-12 glass rounded-2xl">
+    <div id="designs-empty" class="hidden text-center py-12 glass rounded-2xl">
       <i class="fas fa-palette text-pink-400 text-4xl mb-4 block"></i>
       <p class="text-white font-bold text-lg mb-1">Designs drop at 6am!</p>
       <p class="text-gray-400 text-sm">Check back tomorrow morning for 5 fresh ecommerce designs.</p>
-    </div> -->
-
-    <!-- Date selector strip -->
-    <div id="designs-dates" class="hidden flex-wrap justify-center gap-2 mb-6"></div>
-
-    <!-- <div id="designs-footer" class="hidden text-center mt-6">
+    </div>
+    <div id="designs-no-match" class="hidden text-center py-10">
+      <p class="text-gray-500">No designs in this category yet. More coming soon!</p>
+    </div>
+    <div id="designs-footer" class="hidden text-center mt-6">
       <a href="https://lousycoder96.github.io/ecommerce-daily-builds/"
         target="_blank"
         class="glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-gray-300 font-semibold hover:border-pink-500 hover:text-white transition-colors">
         <i class="fas fa-palette"></i> Browse All Design Archives
         <i class="fas fa-arrow-right text-xs"></i>
       </a>
-    </div> -->
+    </div>
 
   </div>
 </section>
@@ -1170,6 +1197,26 @@
   loadBuilds();
 
   // ── Daily Designs ──────────────────────────────────────
+  let allDesigns = [];
+  let activeDesignFilter = 'all';
+
+  function filterDesigns(type) {
+    activeDesignFilter = type;
+    document.querySelectorAll('.designs-tab').forEach(btn => {
+      btn.classList.toggle('active-tab', btn.dataset.type === type);
+    });
+    const grid    = document.getElementById('designs-grid');
+    const noMatch = document.getElementById('designs-no-match');
+    const footer  = document.getElementById('designs-footer');
+    const filtered = type === 'all' ? allDesigns : allDesigns.filter(d => d.type === type);
+    grid.innerHTML = '';
+    noMatch.classList.add('hidden');
+    footer.classList.add('hidden');
+    if (!filtered.length) { noMatch.classList.remove('hidden'); return; }
+    filtered.forEach(d => { grid.innerHTML += designCard(d); });
+    footer.classList.remove('hidden');
+  }
+
   const TYPE_LABELS = {
     'storefront':   { icon: 'fa-store',          label: 'Storefront'   },
     'product-page': { icon: 'fa-tag',            label: 'Product Page' },
@@ -1227,22 +1274,22 @@
 
       // Find the most recent entry that actually has designs
       const entryWithDesigns = all.find(e => e.designs && e.designs.length > 0);
-      const designs = entryWithDesigns?.designs || [];
+      allDesigns = entryWithDesigns?.designs || [];
 
       if (loading) loading.remove();
 
-      if (!designs.length) {
+      if (!allDesigns.length) {
         if (empty) empty.classList.remove('hidden');
         return;
       }
 
-      designs.forEach(d => { grid.innerHTML += designCard(d); });
-      if (footer) footer.classList.remove('hidden');
+      filterDesigns(activeDesignFilter);
 
     } catch(e) {
       console.warn('Designs not available yet:', e.message);
       if (loading) loading.remove();
-      if (empty) empty.classList.remove('hidden');
+      const empty2 = document.getElementById('designs-empty');
+      if (empty2) empty2.classList.remove('hidden');
     }
   }
 
