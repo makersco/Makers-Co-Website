@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Designs — Makers Co</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 500: '#6366f1', 600: '#4f46e5' },
+            accent: { 500: '#8b5cf6' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; }
+
+    /* Scroll progress bar */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, #6366f1, #a78bfa, #ec4899);
+      z-index: 9999; transition: width 0.1s linear;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); }
+
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-link { color: #94a3b8; transition: color 0.2s; font-size: 0.875rem; font-weight: 500; }
+    .nav-link:hover, .nav-link.active { color: #e2e8f0; }
+    .nav-link.active { color: #a78bfa; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35); transition: all 0.25s ease;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+
+    /* Back to top */
+    #back-top {
+      position: fixed; bottom: 5.5rem; right: 1.5rem; width: 44px; height: 44px;
+      background: rgba(99,102,241,0.85); border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s, transform 0.2s;
+      z-index: 90; color: white; font-size: 14px;
+    }
+    #back-top.visible { opacity: 1; }
+    #back-top:hover { transform: translateY(-2px); }
+
+    /* WhatsApp FAB */
+    #wa-fab {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      background: #25d366; border-radius: 50%; width: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 90; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s, box-shadow 0.2s; color: white; font-size: 22px;
+    }
+    #wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+
+    /* Designs filter tabs (reuse builds-tab styles) */
+    .builds-tab {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #94a3b8;
+    }
+    .builds-tab:hover { color: #e2e8f0; border-color: rgba(99,102,241,0.4); }
+    .builds-tab.active-tab {
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+    }
+
+    @media (max-width: 768px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-btn { display: block; }
+    }
+    @media (min-width: 769px) {
+      .mobile-menu-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div id="progress-bar"></div>
+
+<!-- WhatsApp FAB -->
+<a id="wa-fab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%27m%20interested%20in%20your%20services." target="_blank" title="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Back to top -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- NAVBAR -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  style="background: rgba(10,10,15,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-xl">
+      <span class="gradient-bg w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm">
+        <i class="fas fa-wand-magic-sparkles"></i>
+      </span>
+      <span>Makers Co</span>
+    </a>
+
+    <ul class="desktop-nav flex items-center gap-8">
+      <li><a href="index.html#home"     class="nav-link">Home</a></li>
+      <li><a href="index.html#services" class="nav-link">Services</a></li>
+      <li><a href="builds.html"         class="nav-link">Daily Builds</a></li>
+      <li><a href="cards.html"          class="nav-link">Biz Cards</a></li>
+      <li><a href="designs.html"        class="nav-link active">Designs</a></li>
+      <li><a href="index.html#tech"     class="nav-link">Tech Stack</a></li>
+      <li><a href="index.html#about"    class="nav-link">About</a></li>
+      <li><a href="index.html#contact"  class="nav-link">Contact</a></li>
+    </ul>
+
+    <a href="index.html#contact"
+      class="hidden md:inline-flex btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl items-center gap-2">
+      Get Started <i class="fas fa-arrow-right text-xs"></i>
+    </a>
+
+    <button class="mobile-menu-btn text-gray-400 text-xl" onclick="toggleMenu()">
+      <i class="fas fa-bars" id="menu-icon"></i>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+    <ul class="flex flex-col gap-3">
+      <li><a href="index.html#home"     class="nav-link block py-1">Home</a></li>
+      <li><a href="index.html#services" class="nav-link block py-1">Services</a></li>
+      <li><a href="builds.html"         class="nav-link block py-1">Daily Builds</a></li>
+      <li><a href="cards.html"          class="nav-link block py-1">Biz Cards</a></li>
+      <li><a href="designs.html"        class="nav-link block py-1">Designs</a></li>
+      <li><a href="index.html#tech"     class="nav-link block py-1">Tech Stack</a></li>
+      <li><a href="index.html#about"    class="nav-link block py-1">About</a></li>
+      <li><a href="index.html#contact"  class="nav-link block py-1">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- DAILY DESIGNS -->
+<section id="designs" class="pt-32 pb-24 relative">
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 50% 40% at 80% 50%, rgba(236,72,153,0.06) 0%, transparent 70%)"></div>
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="text-center mb-14">
+      <span class="glass inline-block px-4 py-2 rounded-full text-pink-300 text-sm font-medium mb-4">
+        <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse inline-block mr-2"></span>
+        Categorize to your demand
+      </span>
+      <h2 class="text-4xl lg:text-5xl font-black mb-4">Choose <span class="gradient-text">Your Designs Idea</span></h2>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-10">
+      <button onclick="filterDesigns('all')" data-type="all"
+        class="designs-tab builds-tab active-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        All
+      </button>
+      <button onclick="filterDesigns('storefront')" data-type="storefront"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-store mr-1"></i>Storefront
+      </button>
+      <button onclick="filterDesigns('product-page')" data-type="product-page"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-tag mr-1"></i>Product Page
+      </button>
+      <button onclick="filterDesigns('checkout')" data-type="checkout"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-credit-card mr-1"></i>Checkout
+      </button>
+      <button onclick="filterDesigns('dashboard')" data-type="dashboard"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-chart-bar mr-1"></i>Dashboard
+      </button>
+      <button onclick="filterDesigns('campaign')" data-type="campaign"
+        class="designs-tab builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
+        <i class="fas fa-fire mr-1"></i>Campaign
+      </button>
+    </div>
+
+    <!-- Designs grid -->
+    <div id="designs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8"></div>
+    <div id="designs-loading" class="text-center py-12">
+      <i class="fas fa-spinner fa-spin text-pink-400 text-2xl mb-3 block"></i>
+      <p class="text-gray-500 text-sm">Loading today's designs...</p>
+    </div>
+    <div id="designs-empty" class="hidden text-center py-12 glass rounded-2xl">
+      <i class="fas fa-palette text-pink-400 text-4xl mb-4 block"></i>
+      <p class="text-white font-bold text-lg mb-1">Designs drop at 6am!</p>
+      <p class="text-gray-400 text-sm">Check back tomorrow morning for 5 fresh ecommerce designs.</p>
+    </div>
+    <div id="designs-no-match" class="hidden text-center py-10">
+      <p class="text-gray-500">No designs in this category yet. More coming soon!</p>
+    </div>
+    <div id="designs-footer" class="hidden text-center mt-6">
+      <a href="https://lousycoder96.github.io/ecommerce-daily-builds/designs/"
+        target="_blank"
+        class="glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-gray-300 font-semibold hover:border-pink-500 hover:text-white transition-colors">
+        <i class="fas fa-palette"></i> Browse All Design Archives
+        <i class="fas fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06)">
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-lg">
+      <span class="gradient-bg w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs"><i class="fas fa-wand-magic-sparkles"></i></span>
+      <span>Makers Co</span>
+    </a>
+    <p class="text-gray-500 text-sm">© 2025 Makers Co. All rights reserved. | Kuala Lumpur, Malaysia</p>
+    <div class="flex gap-4 text-sm text-gray-500">
+      <a href="index.html#services" class="hover:text-gray-300 transition-colors">Services</a>
+      <a href="index.html#about"    class="hover:text-gray-300 transition-colors">About</a>
+      <a href="index.html#contact"  class="hover:text-gray-300 transition-colors">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-20 right-6 hidden items-center gap-3 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold z-50">
+  <i class="fas fa-check-circle"></i>
+  <span id="toast-msg">Copied!</span>
+</div>
+
+<script>
+  // ── Toast ──────────────────────────────────────────────
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.classList.remove('hidden');
+    toast.classList.add('flex');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => {
+      toast.classList.add('hidden');
+      toast.classList.remove('flex');
+    }, 2800);
+  }
+
+  // ── Mobile menu ────────────────────────────────────────
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('menu-icon');
+    menu.classList.toggle('hidden');
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-times');
+  }
+
+  // ── Daily Designs ──────────────────────────────────────
+  const PROJECTS_JSON_URL =
+    'https://raw.githubusercontent.com/lousycoder96/ecommerce-daily-builds/main/projects.json';
+
+  let allDesigns = [];
+  let activeDesignFilter = 'all';
+
+  const TYPE_LABELS = {
+    'storefront':   { icon: 'fa-store',          label: 'Storefront'   },
+    'product-page': { icon: 'fa-tag',            label: 'Product Page' },
+    'checkout':     { icon: 'fa-credit-card',    label: 'Checkout'     },
+    'dashboard':    { icon: 'fa-chart-bar',      label: 'Dashboard'    },
+    'campaign':     { icon: 'fa-fire',           label: 'Campaign'     },
+  };
+
+  function filterDesigns(type) {
+    activeDesignFilter = type;
+    document.querySelectorAll('.designs-tab').forEach(btn => {
+      btn.classList.toggle('active-tab', btn.dataset.type === type);
+    });
+    const grid    = document.getElementById('designs-grid');
+    const noMatch = document.getElementById('designs-no-match');
+    const footer  = document.getElementById('designs-footer');
+    const filtered = type === 'all' ? allDesigns : allDesigns.filter(d => d.type === type);
+    grid.innerHTML = '';
+    noMatch.classList.add('hidden');
+    footer.classList.add('hidden');
+    if (!filtered.length) { noMatch.classList.remove('hidden'); return; }
+    filtered.forEach(d => { grid.innerHTML += designCard(d); });
+    footer.classList.remove('hidden');
+  }
+
+  function designCard(d) {
+    const meta    = TYPE_LABELS[d.type] || { icon: 'fa-palette', label: d.type };
+    const waMsg   = encodeURIComponent(`Hi Makers Co! I want this ${d.type} design for ${d.niche}. Can you build it for my store?`);
+    const bgStyle = `background:${d.color}22; border-color:${d.color}44`;
+    return `
+      <div class="rounded-2xl overflow-hidden flex flex-col" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);transition:all .3s ease"
+        onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='${d.color}88'"
+        onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,0.07)'">
+        <!-- Color header bar -->
+        <div class="h-2 w-full" style="background:${d.color}"></div>
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex items-center justify-between mb-3">
+            <span class="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full" style="${bgStyle}">
+              <i class="fas ${meta.icon}" style="color:${d.color}"></i>
+              <span style="color:${d.color}">${meta.label}</span>
+            </span>
+            <span class="text-gray-600 text-xs">${d.style.split(' ')[0]}</span>
+          </div>
+          <h4 class="text-white font-bold text-lg mb-0.5">${d.brand}</h4>
+          <p class="text-gray-400 text-xs mb-1">${d.niche}</p>
+          <p class="text-gray-500 text-xs italic mb-4">"${d.tagline}"</p>
+          <div class="flex gap-2 mt-auto">
+            <a href="${d.url || d.preview_url}" target="_blank"
+              class="flex-1 text-white text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-1.5"
+              style="background:${d.color}; box-shadow:0 4px 14px ${d.color}44">
+              <i class="fas fa-eye text-xs"></i> View Design
+            </a>
+            <a href="https://wa.me/60172996254?text=${waMsg}" target="_blank"
+              class="glass text-green-400 text-sm py-2.5 px-3 rounded-xl flex items-center justify-center hover:border-green-500 transition-colors"
+              title="Get this design built">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  async function loadDesigns() {
+    const grid    = document.getElementById('designs-grid');
+    const loading = document.getElementById('designs-loading');
+    const empty   = document.getElementById('designs-empty');
+    const footer  = document.getElementById('designs-footer');
+
+    try {
+      const r   = await fetch(`${PROJECTS_JSON_URL}?t=${Date.now()}`);
+      const all = await r.json();
+
+      const entryWithDesigns = all.find(e => e.designs && e.designs.length > 0);
+      allDesigns = entryWithDesigns?.designs || [];
+
+      if (loading) loading.remove();
+
+      if (!allDesigns.length) {
+        if (empty) empty.classList.remove('hidden');
+        return;
+      }
+
+      filterDesigns(activeDesignFilter);
+
+    } catch(e) {
+      console.warn('Designs not available yet:', e.message);
+      if (loading) loading.remove();
+      const empty2 = document.getElementById('designs-empty');
+      if (empty2) empty2.classList.remove('hidden');
+    }
+  }
+
+  loadDesigns();
+
+  // ── Scroll: progress bar, back-to-top ─────────────────
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('progress-bar').style.width = `${(scrolled / total) * 100}%`;
+
+    const backTop = document.getElementById('back-top');
+    scrolled > 400 ? backTop.classList.add('visible') : backTop.classList.remove('visible');
+  });
+</script>
+</body>
+</html>
