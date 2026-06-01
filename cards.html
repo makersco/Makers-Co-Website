@@ -103,6 +103,9 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.07);
       transition: all 0.3s ease;
+      overflow: hidden;   /* stop content bleeding out on mobile */
+      min-width: 0;       /* allow flex/grid children to shrink */
+      word-break: break-word;
     }
     .card-tile:hover {
       transform: translateY(-4px);
@@ -111,8 +114,8 @@
     }
 
     @media (max-width: 768px) {
-      .desktop-nav { display: none; }
-      .mobile-menu-btn { display: block; }
+      .desktop-nav { display: none !important; }
+      .mobile-menu-btn { display: block !important; }
     }
     @media (min-width: 769px) {
       .mobile-menu-btn { display: none; }
@@ -145,7 +148,7 @@
       <span>Makers Co</span>
     </a>
 
-    <ul class="desktop-nav flex items-center gap-8">
+    <ul class="desktop-nav hidden md:flex items-center gap-8">
       <li><a href="index.html#home"     class="nav-link">Home</a></li>
       <li><a href="index.html#services" class="nav-link">Services</a></li>
       <li><a href="builds.html"         class="nav-link">Daily Builds</a></li>
@@ -156,7 +159,7 @@
       <li><a href="index.html#contact"  class="nav-link">Contact</a></li>
     </ul>
 
-    <button class="mobile-menu-btn text-gray-400 text-xl" onclick="toggleMenu()">
+    <button class="mobile-menu-btn md:hidden text-gray-400 text-xl" onclick="toggleMenu()">
       <i class="fas fa-bars" id="menu-icon"></i>
     </button>
   </div>
@@ -178,7 +181,7 @@
 <!-- DIGITAL BUSINESS CARDS -->
 <section id="cards" class="pt-24 sm:pt-32 pb-16 sm:pb-24 relative">
   <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(236,72,153,0.06) 0%, transparent 70%)"></div>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 overflow-x-hidden">
 
     <div class="text-center mb-10 sm:mb-14">
       <span class="glass inline-block px-4 py-2 rounded-full text-pink-300 text-sm font-medium mb-4">

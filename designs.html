@@ -88,8 +88,8 @@
     }
 
     @media (max-width: 768px) {
-      .desktop-nav { display: none; }
-      .mobile-menu-btn { display: block; }
+      .desktop-nav { display: none !important; }
+      .mobile-menu-btn { display: block !important; }
     }
     @media (min-width: 769px) {
       .mobile-menu-btn { display: none; }
@@ -122,7 +122,7 @@
       <span>Makers Co</span>
     </a>
 
-    <ul class="desktop-nav flex items-center gap-8">
+    <ul class="desktop-nav hidden md:flex items-center gap-8">
       <li><a href="index.html#home"     class="nav-link">Home</a></li>
       <li><a href="index.html#services" class="nav-link">Services</a></li>
       <li><a href="builds.html"         class="nav-link">Daily Builds</a></li>
@@ -138,7 +138,7 @@
       Get Started <i class="fas fa-arrow-right text-xs"></i>
     </a>
 
-    <button class="mobile-menu-btn text-gray-400 text-xl" onclick="toggleMenu()">
+    <button class="mobile-menu-btn md:hidden text-gray-400 text-xl" onclick="toggleMenu()">
       <i class="fas fa-bars" id="menu-icon"></i>
     </button>
   </div>
