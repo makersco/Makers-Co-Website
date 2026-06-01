@@ -22,7 +22,29 @@
   </script>
   <style>
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      overflow-x: hidden;
+    }
+
+    /* Cross-browser fixed navbar */
+    #navbar {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+      #navbar { background: rgba(10,10,15,0.98) !important; }
+    }
+
+    /* Scrollbar hide for feature pills on mobile */
+    .pills-scroll::-webkit-scrollbar { display: none; }
+    .pills-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* Scroll progress bar */
     #progress-bar {
@@ -111,8 +133,8 @@
 
 <!-- NAVBAR -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-  style="background: rgba(10,10,15,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+  style="background: rgba(10,10,15,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
     <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-xl">
       <span class="gradient-bg w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm">
         <i class="fas fa-wand-magic-sparkles"></i>
@@ -136,43 +158,43 @@
     </button>
   </div>
 
-  <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-    <ul class="flex flex-col gap-3">
-      <li><a href="index.html#home"     class="nav-link block py-1">Home</a></li>
-      <li><a href="index.html#services" class="nav-link block py-1">Services</a></li>
-      <li><a href="builds.html"         class="nav-link block py-1">Daily Builds</a></li>
-      <li><a href="cards.html"          class="nav-link block py-1">Biz Cards</a></li>
-      <li><a href="designs.html"        class="nav-link block py-1">Designs</a></li>
-      <li><a href="index.html#tech"     class="nav-link block py-1">Tech Stack</a></li>
-      <li><a href="index.html#about"    class="nav-link block py-1">About</a></li>
-      <li><a href="index.html#contact"  class="nav-link block py-1">Contact</a></li>
+  <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 border-t border-white/5 mt-1">
+    <ul class="flex flex-col gap-1 pt-2">
+      <li><a href="index.html#home"     class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Home</a></li>
+      <li><a href="index.html#services" class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Services</a></li>
+      <li><a href="builds.html"         class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Daily Builds</a></li>
+      <li><a href="cards.html"          class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Biz Cards</a></li>
+      <li><a href="designs.html"        class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Designs</a></li>
+      <li><a href="index.html#tech"     class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Tech Stack</a></li>
+      <li><a href="index.html#about"    class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">About</a></li>
+      <li><a href="index.html#contact"  class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Contact</a></li>
     </ul>
   </div>
 </nav>
 
 <!-- DIGITAL BUSINESS CARDS -->
-<section id="cards" class="pt-32 pb-24 relative">
+<section id="cards" class="pt-24 sm:pt-32 pb-16 sm:pb-24 relative">
   <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(236,72,153,0.06) 0%, transparent 70%)"></div>
-  <div class="max-w-6xl mx-auto px-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
-    <div class="text-center mb-14">
+    <div class="text-center mb-10 sm:mb-14">
       <span class="glass inline-block px-4 py-2 rounded-full text-pink-300 text-sm font-medium mb-4">
         <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block mr-2"></span>
         Business Cards
       </span>
-      <h2 class="text-4xl lg:text-5xl font-black mb-4">Digital <span class="gradient-text">Business Cards</span></h2>
-      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl lg:text-5xl font-black mb-4">Digital <span class="gradient-text">Business Cards</span></h2>
+      <p class="text-gray-400 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
         Tailoring Business Card for your business, from link, apple wallet card, to full digitalize business cards.
       </p>
     </div>
 
-    <!-- Feature pills -->
-    <div class="flex flex-wrap justify-center gap-3 mb-12">
-      <span class="glass px-4 py-2 rounded-full text-sm font-medium text-green-300"><i class="fab fa-apple mr-2"></i>Apple Wallet</span>
-      <span class="glass px-4 py-2 rounded-full text-sm font-medium text-blue-300"><i class="fas fa-qrcode mr-2"></i>QR Scannable</span>
-      <span class="glass px-4 py-2 rounded-full text-sm font-medium text-purple-300"><i class="fas fa-link mr-2"></i>Unique URL</span>
-      <span class="glass px-4 py-2 rounded-full text-sm font-medium text-orange-300"><i class="fas fa-address-card mr-2"></i>vCard Export</span>
-      <span class="glass px-4 py-2 rounded-full text-sm font-medium text-pink-300"><i class="fas fa-infinity mr-2"></i>Never Repeats</span>
+    <!-- Feature pills — horizontal scroll on mobile -->
+    <div class="pills-scroll flex gap-2 sm:gap-3 mb-10 sm:mb-12 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible" style="-webkit-overflow-scrolling:touch;">
+      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-green-300 whitespace-nowrap flex-shrink-0"><i class="fab fa-apple mr-1.5"></i>Apple Wallet</span>
+      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-blue-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-qrcode mr-1.5"></i>QR Scannable</span>
+      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-purple-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-link mr-1.5"></i>Unique URL</span>
+      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-orange-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-address-card mr-1.5"></i>vCard Export</span>
+      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-pink-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-infinity mr-1.5"></i>Never Repeats</span>
     </div>
 
     <!-- Card grid -->
@@ -192,7 +214,7 @@
     </div>
 
     <!-- Footer -->
-    <div id="cards-footer" class="hidden text-center mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
+    <div id="cards-footer" class="hidden text-center mt-10 flex flex-col items-center justify-center gap-3">
       <a href="https://lousycoder96.github.io/ecommerce-daily-builds/cards/"
         target="_blank"
         class="glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-gray-300 font-semibold hover:border-pink-500 hover:text-white transition-colors">
