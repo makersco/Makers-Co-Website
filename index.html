@@ -21,16 +21,18 @@
     }
   </script>
   <style>
-    html { scroll-behavior: smooth; }
-    /* Fix iOS Safari 100dvh bug — all mobile browsers */
-    html, body { height: 100%; }
+    html {
+      scroll-behavior: smooth;
+      /* Offset anchor scrolling so fixed navbar never covers section headings */
+      scroll-padding-top: 72px;
+    }
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(89deg, #991c1c, #0e0c1f, #000000);
       color: #e2e8f0;
-      -webkit-text-size-adjust: 100%; /* Prevent font scaling on orientation change */
+      -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
-      overflow-x: hidden;
+      /* NOTE: do NOT add overflow-x:hidden here — it breaks position:fixed on iOS Safari */
     }
 
     /* ── Cross-browser fixed navbar ─────────────────────────────────────── */
@@ -46,13 +48,10 @@
       #navbar { background: rgba(10,10,15,0.98) !important; }
     }
 
-    /* ── Fix iOS Safari min-height 100vh bug ─────────────────────────────── */
-    /* When iOS hides/shows URL bar, 100vh is wrong — use dvh with fallback  */
-    .min-h-screen {
-      min-height: 100vh;
-    }
-    @supports (min-height: 100dvh) {
-      .min-h-screen { min-height: 100dvh; }
+    /* Sections: add scroll-margin-top as fallback for older browsers
+       that don't support scroll-padding-top on html */
+    #services, #tech, #about, #contact {
+      scroll-margin-top: 72px;
     }
 
     /* Scroll progress bar */
