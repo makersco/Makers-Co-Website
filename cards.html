@@ -1,403 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Digital Business Cards — Makers Co</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: { 500: '#6366f1', 600: '#4f46e5' },
-            accent: { 500: '#8b5cf6' }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 72px;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0a0f;
-      color: #e2e8f0;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-      /* Do NOT add overflow-x:hidden — breaks position:fixed on iOS Safari */
-    }
-    #cards { scroll-margin-top: 72px; }
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#0e0a08;--bg2:#140f0a;--bg3:#1c1410;
+  --p1:#FFD3AC;--p2:#FFB5AB;--p3:#E39A7B;--p4:#DBB06B;
+  --t1:#fdf5ee;--t2:#b8957a;--t3:#7a6250;
+  --grad:linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);
+  --gtext:linear-gradient(135deg,#FFD3AC,#FFB5AB,#E39A7B);
+  --bdr:rgba(255,211,172,.09);--bdr2:rgba(255,211,172,.18);
+  --r:16px;--rlg:24px;--nav:72px;--max:1240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:var(--nav)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(227,154,123,.35);color:#fff}
 
-    /* Cross-browser fixed navbar */
-    #navbar {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      will-change: transform;
-    }
-    @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-      #navbar { background: rgba(10,10,15,0.98) !important; }
-    }
+#cur-dot{width:8px;height:8px;background:var(--p4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s}
+#cur-ring{width:36px;height:36px;border:1.5px solid rgba(219,176,107,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,opacity .3s}
+#cur-dot.hov{width:0;height:0}#cur-ring.hov{width:52px;height:52px;border-color:rgba(219,176,107,.8)}
+@media(pointer:coarse){#cur-dot,#cur-ring{display:none}}
 
-    /* Scrollbar hide for feature pills on mobile */
-    .pills-scroll::-webkit-scrollbar { display: none; }
-    .pills-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+#pb{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--grad);z-index:9997;transition:width .1s linear}
 
-    /* Scroll progress bar */
-    #progress-bar {
-      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-      background: linear-gradient(90deg, #6366f1, #a78bfa, #ec4899);
-      z-index: 9999; transition: width 0.1s linear;
-    }
+.prism-mark{animation:pspin 10s linear infinite}
+@keyframes pspin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
 
-    .gradient-text {
-      background: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); }
-    .prism-animate{animation:prism-spin 10s linear infinite}
-    @keyframes prism-spin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
+#nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:100;padding:0 clamp(20px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:24px;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+#nav.scrolled{background:rgba(14,10,8,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-color:var(--bdr)}
+.n-logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:800;letter-spacing:-.04em;flex-shrink:0}
+.n-mark{width:34px;height:34px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .3s}
+.n-logo:hover .n-mark{transform:rotate(-8deg) scale(1.1)}
+.n-links{display:flex;align-items:center;gap:32px;list-style:none}
+.n-links a{font-size:13.5px;font-weight:500;color:var(--t2);transition:color .2s}
+.n-links a:hover,.n-links a.active{color:var(--t1)}
+.n-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;color:var(--t1);padding:9px 22px;border:1px solid var(--bdr2);border-radius:99px;background:rgba(255,211,172,.04);transition:all .25s;white-space:nowrap}
+.n-cta:hover{background:var(--grad);border-color:transparent;box-shadow:0 8px 28px rgba(227,154,123,.3)}
+.n-burger{display:none;background:none;border:none;color:var(--t1);font-size:20px;cursor:pointer;padding:4px}
 
-    .glass {
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
+#mmenu{position:fixed;inset:0;top:var(--nav);background:rgba(14,10,8,.97);backdrop-filter:blur(24px);z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transition:opacity .3s}
+#mmenu.open{opacity:1;pointer-events:all}
+#mmenu a{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,6vw,38px);font-weight:800;letter-spacing:-.04em;color:var(--t2);transition:color .2s}
+#mmenu a:hover{color:var(--t1)}
 
-    .nav-link { color: #94a3b8; transition: color 0.2s; font-size: 0.875rem; font-weight: 500; }
-    .nav-link:hover, .nav-link.active { color: #e2e8f0; }
-    .nav-link.active { color: #a78bfa; }
+.wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
 
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      box-shadow: 0 4px 20px rgba(99,102,241,0.35); transition: all 0.25s ease;
-    }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);animation:ofloat 9s ease-in-out infinite}
+@keyframes ofloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-28px) scale(1.06)}66%{transform:translate(-16px,18px) scale(.94)}}
 
-    /* Back to top */
-    #back-top {
-      position: fixed; bottom: 5.5rem; right: 1.5rem; width: 44px; height: 44px;
-      background: rgba(99,102,241,0.85); border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s, transform 0.2s;
-      z-index: 90; color: white; font-size: 14px;
-    }
-    #back-top.visible { opacity: 1; }
-    #back-top:hover { transform: translateY(-2px); }
+/* hero */
+.hero{min-height:56vh;display:flex;align-items:center;padding-top:calc(var(--nav) + 48px);padding-bottom:64px;position:relative;overflow:hidden}
+.hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:20px;opacity:0;transform:translateY(12px)}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--p4);animation:pdot 2.2s ease infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(219,176,107,.6)}50%{box-shadow:0 0 0 7px rgba(219,176,107,0)}}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(42px,7vw,88px);font-weight:800;line-height:.98;letter-spacing:-.055em;margin-bottom:24px}
+.hero-title .ln{display:block;overflow:hidden}
+.hero-title .li{display:block;transform:translateY(110%)}
+.hero-title em{font-style:italic;background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(14px,1.4vw,17px);color:var(--t2);line-height:1.8;max-width:500px;opacity:0;transform:translateY(14px)}
 
-    /* WhatsApp FAB */
-    #wa-fab {
-      position: fixed; bottom: 1.5rem; right: 1.5rem;
-      background: #25d366; border-radius: 50%; width: 52px; height: 52px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 90; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      transition: transform 0.2s, box-shadow 0.2s; color: white; font-size: 22px;
-    }
-    #wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+/* feature pills */
+.feat-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;opacity:0;transform:translateY(12px)}
+.feat-pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--t2);padding:8px 16px;border:1px solid var(--bdr2);border-radius:99px;background:rgba(255,211,172,.04);transition:all .25s}
+.feat-pill i{color:var(--p3)}
+.feat-pill:hover{border-color:rgba(227,154,123,.4);color:var(--t1)}
 
-    /* Business card tiles */
-    .card-tile {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: all 0.3s ease;
-      overflow: hidden;   /* stop content bleeding out on mobile */
-      min-width: 0;       /* allow flex/grid children to shrink */
-      word-break: break-word;
-    }
-    .card-tile:hover {
-      transform: translateY(-4px);
-      border-color: rgba(236,72,153,0.4);
-      box-shadow: 0 20px 40px rgba(236,72,153,0.1);
-    }
+.divider{height:1px;background:var(--bdr)}
+#cards-section{padding:60px 0 120px;position:relative}
 
-    @media (max-width: 768px) {
-      .desktop-nav { display: none !important; }
-      .mobile-menu-btn { display: block !important; }
-    }
-    @media (min-width: 769px) {
-      .mobile-menu-btn { display: none; }
-    }
-  </style>
+/* cards grid */
+#cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+
+/* business card tile */
+.ct{
+  border:1px solid var(--bdr);border-radius:var(--rlg);
+  background:var(--bg2);padding:28px;
+  display:flex;flex-direction:column;gap:16px;
+  transition:border-color .35s,box-shadow .35s,transform .35s cubic-bezier(.16,1,.3,1);
+  cursor:pointer;position:relative;overflow:hidden;
+  opacity:0;transform:translateY(30px);
+}
+.ct:hover{border-color:rgba(227,154,123,.4);box-shadow:0 32px 60px rgba(0,0,0,.4),0 0 0 1px rgba(227,154,123,.14)}
+.ct::before{content:'';position:absolute;inset:0;background:var(--grad);opacity:0;transition:opacity .4s;border-radius:var(--rlg);pointer-events:none}
+.ct:hover::before{opacity:.04}
+
+/* mini card preview */
+.ct-preview{border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;transition:transform .3s}
+.ct:hover .ct-preview{transform:translateY(-2px)}
+.ct-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0}
+.ct-preview-info{flex:1;min-width:0}
+.ct-preview-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct-preview-role{font-size:11.5px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* badges row */
+.ct-badges{display:flex;gap:6px;flex-wrap:wrap}
+.ct-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;letter-spacing:.06em;color:var(--t2);padding:4px 10px;border:1px solid var(--bdr);border-radius:99px}
+.ct-badge i{font-size:10px}
+
+/* type + style row */
+.ct-type-row{display:flex;align-items:center;justify-content:space-between}
+.ct-type{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:99px}
+.ct-style-lbl{font-size:11px;color:var(--t3)}
+
+/* actions */
+.ct-actions{display:flex;gap:9px;margin-top:auto}
+.ct-btn-main{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;padding:11px;border-radius:12px;color:#fff;transition:transform .2s,box-shadow .2s}
+.ct-btn-main:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.ct-btn-wa{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;border:1px solid var(--bdr2);background:rgba(255,211,172,.04);color:#25d366;font-size:14px;transition:all .25s}
+.ct-btn-wa:hover{border-color:#25d366}
+
+/* shimmer on card preview hover */
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* states */
+#cards-loading,#cards-empty{text-align:center;padding:80px 0}
+#cards-loading i{font-size:32px;color:var(--p4);display:block;margin-bottom:12px}
+#cards-loading p,#cards-empty p{color:var(--t3);font-size:15px}
+#cards-empty i{font-size:36px;color:var(--p4);display:block;margin-bottom:14px}
+#cards-empty .empty-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--t1);margin:8px 0 6px}
+.hidden{display:none!important}
+
+/* CTA banner */
+.cta-banner{margin-top:72px;border:1px solid var(--bdr2);border-radius:var(--rlg);background:rgba(255,211,172,.04);padding:48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.cta-banner h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.04em}
+.cta-banner h3 em{font-style:italic;background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-banner p{font-size:15px;color:var(--t2);margin-top:8px;max-width:440px;line-height:1.7}
+.cta-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-grad{display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:14px 28px;background:var(--grad);border-radius:99px;color:#fff;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-grad:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(227,154,123,.35)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:13px 26px;border:1px solid var(--bdr2);border-radius:99px;color:var(--t2);background:transparent;cursor:pointer;transition:all .25s}
+.btn-ghost:hover{color:var(--t1);border-color:rgba(255,255,255,.22)}
+
+#cards-footer{text-align:center;margin-top:40px}
+.view-all{display:inline-flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;padding:13px 28px;border:1px solid var(--bdr2);border-radius:99px;color:var(--t2);background:rgba(255,211,172,.04);transition:all .25s}
+.view-all:hover{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 8px 28px rgba(227,154,123,.3)}
+
+footer{border-top:1px solid var(--bdr);padding:52px 0 40px}
+.foot-row{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+.foot-logo{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.04em}
+.foot-mark{width:30px;height:30px;background:var(--grad);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{font-size:13.5px;color:var(--t3);transition:color .2s}
+.foot-links a:hover{color:var(--t1)}
+.foot-copy{font-size:12.5px;color:var(--t3)}
+
+#wafab{position:fixed;bottom:28px;right:28px;width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;z-index:80;box-shadow:0 8px 28px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s}
+#wafab:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,.55)}
+#btt{position:fixed;bottom:96px;right:28px;width:44px;height:44px;border-radius:50%;background:rgba(227,154,123,.85);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;cursor:pointer;opacity:0;transition:opacity .3s,transform .2s;z-index:80;border:none}
+#btt.show{opacity:1}#btt:hover{transform:translateY(-2px)}
+#toast{position:fixed;bottom:100px;right:28px;background:var(--p3);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;display:none;align-items:center;gap:9px;z-index:200;box-shadow:0 8px 28px rgba(227,154,123,.4)}
+
+@media(max-width:860px){.n-links{display:none}.n-burger{display:block}#cards-grid{grid-template-columns:1fr}.cta-banner{padding:32px;flex-direction:column}}
+@media(max-width:520px){.foot-row{flex-direction:column;text-align:center}.feat-pills{gap:7px}}
+</style>
 </head>
 <body>
+<div id="pb"></div>
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+<a id="wafab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%20want%20a%20digital%20business%20card." target="_blank"><i class="fab fa-whatsapp"></i></a>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg">Done!</span></div>
 
-<!-- Scroll progress bar -->
-<div id="progress-bar"></div>
+<div id="mmenu">
+  <a href="index.html" onclick="cm()">Home</a>
+  <a href="index.html#services" onclick="cm()">Services</a>
+  <a href="builds.html" onclick="cm()">Daily Builds</a>
+  <a href="designs.html" onclick="cm()">Designs</a>
+  <a href="cards.html" class="active" onclick="cm()">Biz Cards</a>
+  <a href="index.html#contact" onclick="cm()" style="background:var(--grad);padding:12px 32px;border-radius:99px;color:#fff;font-size:18px">Get My Card →</a>
+</div>
 
-<!-- WhatsApp FAB -->
-<a id="wa-fab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%27m%20interested%20in%20your%20services." target="_blank" title="Chat on WhatsApp">
-  <i class="fab fa-whatsapp"></i>
-</a>
-
-<!-- Back to top -->
-<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
-  <i class="fas fa-chevron-up"></i>
-</button>
-
-<!-- NAVBAR -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-  style="background: rgba(10,10,15,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-xl">
-      <div class="prism-animate" style="width:34px;height:34px;background:linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff">
-        <svg viewBox="0 0 56 58" width="20" height="20" fill="none"><polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/><polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/><polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/><polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/><polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/><polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/></svg>
-      </div>
-      <span>Makers Co</span>
-    </a>
-
-    <ul class="desktop-nav hidden md:flex items-center gap-8">
-      <li><a href="index.html#home"     class="nav-link">Home</a></li>
-      <li><a href="index.html#services" class="nav-link">Services</a></li>
-      <li><a href="builds.html"         class="nav-link">Daily Builds</a></li>
-      <li><a href="cards.html"          class="nav-link active">Biz Cards</a></li>
-      <li><a href="designs.html"        class="nav-link">Designs</a></li>
-      <li><a href="index.html#tech"     class="nav-link">Tech Stack</a></li>
-      <li><a href="index.html#about"    class="nav-link">About</a></li>
-      <li><a href="index.html#contact"  class="nav-link">Contact</a></li>
-    </ul>
-
-    <button class="mobile-menu-btn md:hidden text-gray-400 text-xl" onclick="toggleMenu()">
-      <i class="fas fa-bars" id="menu-icon"></i>
-    </button>
-  </div>
-
-  <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 border-t border-white/5 mt-1">
-    <ul class="flex flex-col gap-1 pt-2">
-      <li><a href="index.html#home"     class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Home</a></li>
-      <li><a href="index.html#services" class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Services</a></li>
-      <li><a href="builds.html"         class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Daily Builds</a></li>
-      <li><a href="cards.html"          class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Biz Cards</a></li>
-      <li><a href="designs.html"        class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Designs</a></li>
-      <li><a href="index.html#tech"     class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Tech Stack</a></li>
-      <li><a href="index.html#about"    class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">About</a></li>
-      <li><a href="index.html#contact"  class="nav-link block px-3 py-2.5 rounded-lg hover:bg-white/5">Contact</a></li>
-    </ul>
-  </div>
+<nav id="nav">
+  <a href="index.html" class="n-logo">
+    <div class="n-mark prism-mark">
+      <svg viewBox="0 0 56 58" width="20" height="20" fill="none">
+        <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/>
+        <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/>
+        <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
+        <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
+        <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
+        <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/>
+      </svg>
+    </div>
+    <span>Makers Co</span>
+  </a>
+  <ul class="n-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="builds.html">Daily Builds</a></li>
+    <li><a href="designs.html">Designs</a></li>
+    <li><a href="cards.html" class="active">Biz Cards</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+  <a href="index.html#contact" class="n-cta">Get My Card →</a>
+  <button class="n-burger" id="nbtn" onclick="tm()"><i class="fas fa-bars" id="bicon"></i></button>
 </nav>
 
-<!-- DIGITAL BUSINESS CARDS -->
-<section id="cards" class="pt-24 sm:pt-32 pb-16 sm:pb-24 relative">
-  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(236,72,153,0.06) 0%, transparent 70%)"></div>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 overflow-x-hidden">
-
-    <div class="text-center mb-10 sm:mb-14">
-      <span class="glass inline-block px-4 py-2 rounded-full text-pink-300 text-sm font-medium mb-4">
-        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block mr-2"></span>
-        Business Cards
-      </span>
-      <h2 class="text-2xl sm:text-3xl lg:text-5xl font-black mb-4">Digital <span class="gradient-text">Business Cards</span></h2>
-      <p class="text-gray-400 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
-        Tailoring Business Card for your business, from link, apple wallet card, to full digitalize business cards.
-      </p>
+<!-- HERO -->
+<section class="hero">
+  <div class="orb" style="width:480px;height:480px;background:rgba(219,176,107,.09);top:-80px;right:-60px;animation-delay:0s"></div>
+  <div class="orb" style="width:300px;height:300px;background:rgba(255,181,171,.07);bottom:0;left:20%;animation-delay:4.5s"></div>
+  <div class="wrap" style="width:100%">
+    <div class="hero-tag" id="htag"><span class="pulse-dot"></span>Digital · Scannable · Always with you</div>
+    <h1 class="hero-title" id="htitle">
+      <span class="ln"><span class="li">Digital Business</span></span>
+      <span class="ln"><span class="li"><em>Cards</em></span></span>
+      <span class="ln"><span class="li">That Impress.</span></span>
+    </h1>
+    <p class="hero-sub" id="hsub">From Apple Wallet passes to QR-scannable profiles and unique branded URLs — your business card, reimagined for the digital age. Never runs out. Never gets lost.</p>
+    <div class="feat-pills" id="hpills">
+      <span class="feat-pill"><i class="fab fa-apple"></i> Apple Wallet</span>
+      <span class="feat-pill"><i class="fas fa-qrcode"></i> QR Scannable</span>
+      <span class="feat-pill"><i class="fas fa-link"></i> Unique URL</span>
+      <span class="feat-pill"><i class="fas fa-address-card"></i> vCard Export</span>
+      <span class="feat-pill"><i class="fas fa-infinity"></i> Never Runs Out</span>
     </div>
-
-    <!-- Feature pills — horizontal scroll on mobile -->
-    <div class="pills-scroll flex gap-2 sm:gap-3 mb-10 sm:mb-12 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible" style="-webkit-overflow-scrolling:touch;">
-      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-green-300 whitespace-nowrap flex-shrink-0"><i class="fab fa-apple mr-1.5"></i>Apple Wallet</span>
-      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-blue-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-qrcode mr-1.5"></i>QR Scannable</span>
-      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-purple-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-link mr-1.5"></i>Unique URL</span>
-      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-orange-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-address-card mr-1.5"></i>vCard Export</span>
-      <span class="glass px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-pink-300 whitespace-nowrap flex-shrink-0"><i class="fas fa-infinity mr-1.5"></i>Never Repeats</span>
-    </div>
-
-    <!-- Card grid -->
-    <div id="cards-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-    <!-- Loading -->
-    <div id="cards-loading" class="text-center py-16">
-      <i class="fas fa-spinner fa-spin text-pink-400 text-3xl mb-4 block"></i>
-      <p class="text-gray-500">Loading today's card designs...</p>
-    </div>
-
-    <!-- Empty -->
-    <div id="cards-empty" class="hidden text-center py-16 glass rounded-2xl">
-      <i class="fas fa-id-card text-pink-400 text-4xl mb-4 block"></i>
-      <p class="text-white font-bold text-xl mb-2">Card designs ship tomorrow at 6am!</p>
-      <p class="text-gray-400">5 fresh business card designs will appear here daily.</p>
-    </div>
-
-    <!-- Footer -->
-    <div id="cards-footer" class="hidden text-center mt-10 flex flex-col items-center justify-center gap-3">
-      <a href="https://lousycoder96.github.io/ecommerce-daily-builds/cards/"
-        target="_blank"
-        class="glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-gray-300 font-semibold hover:border-pink-500 hover:text-white transition-colors">
-        <i class="fas fa-th-large"></i> View All Card Designs
-      </a>
-      <a href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%20want%20a%20digital%20business%20card%20for%20my%20business."
-        target="_blank"
-        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-colors"
-        style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">
-        <i class="fab fa-whatsapp"></i> Get One For My Business
-      </a>
-      <!-- Get Pricing button — temporarily disabled
-      <a href="https://lousycoder96.github.io/makersco-cards/"
-        target="_blank"
-        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-colors"
-        style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-        <i class="fas fa-tags"></i> Get Pricing
-      </a>
-      -->
-    </div>
-
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer style="background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06)">
-  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-lg">
-      <span class="gradient-bg w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs"><i class="fas fa-wand-magic-sparkles"></i></span>
-      <span>Makers Co</span>
-    </a>
-    <p class="text-gray-500 text-sm">© 2025 Makers Co. All rights reserved. | Kuala Lumpur, Malaysia</p>
-    <div class="flex gap-4 text-sm text-gray-500">
-      <a href="index.html#services" class="hover:text-gray-300 transition-colors">Services</a>
-      <a href="index.html#about"    class="hover:text-gray-300 transition-colors">About</a>
-      <a href="index.html#contact"  class="hover:text-gray-300 transition-colors">Contact</a>
+<div class="divider"></div>
+
+<section id="cards-section">
+  <div class="wrap">
+    <div id="cards-grid"></div>
+
+    <div id="cards-loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading card designs...</p>
+    </div>
+
+    <div id="cards-empty" class="hidden">
+      <i class="fas fa-id-card"></i>
+      <p class="empty-title">Card designs ship tomorrow at 6am!</p>
+      <p>5 fresh business card designs will appear here daily.</p>
+    </div>
+
+    <div id="cards-footer" class="hidden">
+      <a href="https://lousycoder96.github.io/ecommerce-daily-builds/cards/" target="_blank" class="view-all">
+        <i class="fas fa-th-large"></i> View All Card Designs <i class="fas fa-arrow-right" style="font-size:12px"></i>
+      </a>
+    </div>
+
+    <!-- CTA banner -->
+    <div class="cta-banner">
+      <div>
+        <h3>Want a card <em>built for you?</em></h3>
+        <p>Tell us your business type and we'll craft a fully personalised digital card — Apple Wallet ready, QR linked, and live within 24 hours.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%20want%20a%20digital%20business%20card%20for%20my%20business." target="_blank" class="btn-grad">
+          <i class="fab fa-whatsapp"></i> Get Mine Now
+        </a>
+        <a href="index.html#contact" class="btn-ghost">Learn more →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <a href="index.html" class="foot-logo">
+        <div class="foot-mark prism-mark">
+          <svg viewBox="0 0 56 58" width="16" height="16" fill="none">
+            <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.9)"/>
+            <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.65)"/>
+            <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
+            <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
+            <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
+            <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.2)"/>
+          </svg>
+        </div>
+        <span>Makers Co</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#services">Services</a>
+        <a href="builds.html">Daily Builds</a>
+        <a href="designs.html">Designs</a>
+        <a href="cards.html">Biz Cards</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <p class="foot-copy">© 2025 Makers Co · Kuala Lumpur, Malaysia</p>
     </div>
   </div>
 </footer>
 
-<!-- Toast -->
-<div id="toast" class="fixed bottom-20 right-6 hidden items-center gap-3 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold z-50">
-  <i class="fas fa-check-circle"></i>
-  <span id="toast-msg">Copied!</span>
-</div>
-
 <script>
-  // ── Toast ──────────────────────────────────────────────
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    toast.classList.remove('hidden');
-    toast.classList.add('flex');
-    clearTimeout(window._toastTimer);
-    window._toastTimer = setTimeout(() => {
-      toast.classList.add('hidden');
-      toast.classList.remove('flex');
-    }, 2800);
-  }
+gsap.registerPlugin(ScrollTrigger);
 
-  // ── Mobile menu ────────────────────────────────────────
-  function toggleMenu() {
-    const menu = document.getElementById('mobile-menu');
-    const icon = document.getElementById('menu-icon');
-    menu.classList.toggle('hidden');
-    icon.classList.toggle('fa-bars');
-    icon.classList.toggle('fa-times');
-  }
+/* hero entrance */
+window.addEventListener('DOMContentLoaded',()=>{
+  const tl=gsap.timeline({defaults:{ease:'power4.out'}});
+  tl.to('#htag',{opacity:1,y:0,duration:.8,delay:.3})
+    .to('.hero-title .li',{y:'0%',duration:1.1,stagger:.1},'-=.4')
+    .to('#hsub',{opacity:1,y:0,duration:.85},'-=.6')
+    .to('#hpills',{opacity:1,y:0,duration:.7},'-=.5');
+});
 
-  // ── Digital Business Cards ────────────────────────────
-  const PROJECTS_JSON_URL =
-    'https://raw.githubusercontent.com/lousycoder96/ecommerce-daily-builds/main/projects.json';
+/* cursor */
+const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function raf(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(raf)})();
+document.querySelectorAll('a,button,.ct,.feat-pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.classList.add('hov');ring.classList.add('hov')});
+  el.addEventListener('mouseleave',()=>{dot.classList.remove('hov');ring.classList.remove('hov')});
+});
 
-  const BIZ_ICONS = {
-    'creative-freelancer':    'fa-palette',
-    'restaurant-fnb':         'fa-utensils',
-    'real-estate-agent':      'fa-house',
-    'healthcare-doctor':      'fa-stethoscope',
-    'corporate-executive':    'fa-briefcase',
-    'tech-startup':           'fa-microchip',
-    'retail-shop-owner':      'fa-store',
-    'fitness-wellness-coach': 'fa-dumbbell',
-    'legal-lawyer':           'fa-scale-balanced',
-    'education-tutor':        'fa-graduation-cap',
-  };
+/* nav */
+const navEl=document.getElementById('nav'),btt=document.getElementById('btt');
+window.addEventListener('scroll',()=>{
+  navEl.classList.toggle('scrolled',scrollY>50);
+  btt.classList.toggle('show',scrollY>500);
+  document.getElementById('pb').style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+},{passive:true});
 
-  function buildCardTile(card) {
-    const icon    = BIZ_ICONS[card.business_type] || 'fa-id-card';
-    const waMsg   = encodeURIComponent(`Hi Makers Co! I want a digital business card like the ${card.business_type} design for ${card.brand_name}.`);
-    return `
-      <div class="card-tile rounded-2xl p-6 flex flex-col">
-        <!-- Mini card preview -->
-        <div class="rounded-xl p-4 mb-4 flex items-center gap-3"
-          style="background:${card.primary_color}22; border:1px solid ${card.primary_color}44">
-          <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
-            style="background:${card.primary_color}; color:#fff">
-            <i class="fas ${icon} text-sm"></i>
-          </div>
-          <div class="min-w-0">
-            <div class="text-white font-bold text-sm truncate">${card.person_name || card.brand_name}</div>
-            <div class="text-gray-400 text-xs truncate">${card.title || ''} · ${card.brand_name}</div>
-          </div>
-        </div>
+let mo=false;
+function tm(){mo=!mo;document.getElementById('mmenu').classList.toggle('open',mo);document.getElementById('bicon').className=mo?'fas fa-times':'fas fa-bars';document.body.style.overflow=mo?'hidden':'';}
+function cm(){mo=false;document.getElementById('mmenu').classList.remove('open');document.getElementById('bicon').className='fas fa-bars';document.body.style.overflow='';}
 
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-            style="background:${card.primary_color}22; color:${card.primary_color}">
-            ${card.business_type.replace(/-/g,' ')}
-          </span>
-          <span class="text-gray-600 text-xs">${card.style || ''}</span>
-        </div>
-
-        <div class="flex gap-1.5 mb-5 mt-1">
-          <span class="glass text-xs px-2 py-0.5 rounded-full text-green-300"><i class="fab fa-apple text-xs mr-1"></i>Wallet</span>
-          <span class="glass text-xs px-2 py-0.5 rounded-full text-blue-300"><i class="fas fa-qrcode text-xs mr-1"></i>QR</span>
-          <span class="glass text-xs px-2 py-0.5 rounded-full text-purple-300"><i class="fas fa-link text-xs mr-1"></i>URL</span>
-        </div>
-
-        <div class="flex gap-2 mt-auto">
-          <a href="${card.url || card.preview_url}" target="_blank"
-            class="flex-1 text-white text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-1.5"
-            style="background:linear-gradient(135deg,${card.primary_color},${card.primary_color}aa)">
-            <i class="fas fa-eye text-xs"></i> Preview
-          </a>
-          <a href="https://wa.me/60172996254?text=${waMsg}" target="_blank"
-            class="glass text-green-400 text-sm font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center hover:border-green-500 transition-colors"
-            title="Get this built">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-        </div>
-      </div>`;
-  }
-
-  async function loadCards() {
-    try {
-      const r = await fetch(`${PROJECTS_JSON_URL}?t=${Date.now()}`);
-      if (!r.ok) throw new Error(r.status);
-      const projects = await r.json();
-
-      const allCards = [];
-      for (const p of projects) {
-        if (p.cards && p.cards.mocks) {
-          for (const m of p.cards.mocks) {
-            allCards.push({ ...m, date: p.date });
-          }
-        }
-      }
-
-      document.getElementById('cards-loading').remove();
-      const grid   = document.getElementById('cards-grid');
-      const empty  = document.getElementById('cards-empty');
-      const footer = document.getElementById('cards-footer');
-
-      if (!allCards.length) { empty.classList.remove('hidden'); return; }
-
-      allCards.slice(0, 6).forEach(c => { grid.innerHTML += buildCardTile(c); });
-      footer.classList.remove('hidden');
-    } catch(e) {
-      console.warn('Card designs not available yet:', e.message);
-      document.getElementById('cards-loading').remove();
-      document.getElementById('cards-empty').classList.remove('hidden');
-    }
-  }
-
-  loadCards();
-
-  // ── Scroll: progress bar, back-to-top ─────────────────
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    const total = document.body.scrollHeight - window.innerHeight;
-    document.getElementById('progress-bar').style.width = `${(scrolled / total) * 100}%`;
-
-    const backTop = document.getElementById('back-top');
-    scrolled > 400 ? backTop.classList.add('visible') : backTop.classList.remove('visible');
+/* 3D tilt + cursor glow + shimmer effect */
+function initTilt(card){
+  const preview=card.querySelector('.ct-preview');
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width-.5)*14;
+    const y=((e.clientY-r.top)/r.height-.5)*-14;
+    card.style.transform=`perspective(900px) rotateX(${y}deg) rotateY(${x}deg) translateY(-6px)`;
+    const gx=((e.clientX-r.left)/r.width*100).toFixed(1);
+    const gy=((e.clientY-r.top)/r.height*100).toFixed(1);
+    card.style.background=`radial-gradient(circle at ${gx}% ${gy}%, rgba(255,211,172,.08) 0%, #140f0a 55%)`;
   });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';card.style.background='';
+    card.style.transition='transform .55s cubic-bezier(.34,1.56,.64,1),border-color .35s,box-shadow .35s,background .3s';
+    setTimeout(()=>card.style.transition='',600);
+  });
+}
+
+/* cards data */
+const JSON_URL='https://raw.githubusercontent.com/lousycoder96/ecommerce-daily-builds/main/projects.json';
+const BIZ_ICONS={
+  'creative-freelancer':'fa-palette','restaurant-fnb':'fa-utensils',
+  'real-estate-agent':'fa-house','healthcare-doctor':'fa-stethoscope',
+  'corporate-executive':'fa-briefcase','tech-startup':'fa-microchip',
+  'retail-shop-owner':'fa-store','fitness-wellness-coach':'fa-dumbbell',
+  'legal-lawyer':'fa-scale-balanced','education-tutor':'fa-graduation-cap',
+};
+
+function cardTile(card){
+  const icon=BIZ_ICONS[card.business_type]||'fa-id-card';
+  const col=card.primary_color||'#E39A7B';
+  const waMsg=encodeURIComponent(`Hi Makers Co! I want a digital business card like the ${card.business_type} design for ${card.brand_name}.`);
+  return `<div class="ct" data-type="${card.business_type}">
+    <div class="ct-preview" style="background:${col}18;border:1px solid ${col}33">
+      <div class="ct-avatar" style="background:${col}"><i class="fas ${icon}" style="font-size:15px"></i></div>
+      <div class="ct-preview-info">
+        <div class="ct-preview-name">${card.person_name||card.brand_name}</div>
+        <div class="ct-preview-role">${card.title||''} · ${card.brand_name}</div>
+      </div>
+    </div>
+    <div class="ct-type-row">
+      <span class="ct-type" style="background:${col}22;color:${col};border:1px solid ${col}44">${card.business_type.replace(/-/g,' ')}</span>
+      <span class="ct-style-lbl">${card.style||''}</span>
+    </div>
+    <div class="ct-badges">
+      <span class="ct-badge"><i class="fab fa-apple"></i>Wallet</span>
+      <span class="ct-badge"><i class="fas fa-qrcode"></i>QR</span>
+      <span class="ct-badge"><i class="fas fa-link"></i>URL</span>
+    </div>
+    <div class="ct-actions">
+      <a href="${card.url||card.preview_url}" target="_blank" class="ct-btn-main"
+        style="background:linear-gradient(135deg,${col},${col}bb)">
+        <i class="fas fa-eye" style="font-size:12px"></i> Preview Card
+      </a>
+      <a href="https://wa.me/60172996254?text=${waMsg}" target="_blank" class="ct-btn-wa" title="Get this built"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>`;
+}
+
+async function loadCards(){
+  try{
+    const r=await fetch(`${JSON_URL}?t=${Date.now()}`);
+    if(!r.ok)throw new Error(r.status);
+    const projects=await r.json();
+    const allCards=[];
+    for(const p of projects){
+      if(p.cards&&p.cards.mocks){
+        for(const m of p.cards.mocks) allCards.push({...m,date:p.date});
+      }
+    }
+    document.getElementById('cards-loading').remove();
+    const grid=document.getElementById('cards-grid');
+    const empty=document.getElementById('cards-empty');
+    const footer=document.getElementById('cards-footer');
+    if(!allCards.length){empty.classList.remove('hidden');return}
+    allCards.slice(0,12).forEach(c=>grid.innerHTML+=cardTile(c));
+    footer.classList.remove('hidden');
+    /* staggered entrance */
+    gsap.fromTo('.ct',{opacity:0,y:32},{opacity:1,y:0,duration:.65,stagger:.08,ease:'power3.out',
+      onComplete(){document.querySelectorAll('.ct').forEach(c=>initTilt(c))}
+    });
+    /* alternating float */
+    document.querySelectorAll('.ct').forEach((c,i)=>{
+      gsap.to(c,{y:i%2===0?'-=7':'+=7',duration:2.8+i*.15,ease:'sine.inOut',yoyo:true,repeat:-1,delay:i*.25});
+    });
+  }catch(e){
+    console.warn('cards:',e);
+    document.getElementById('cards-loading').remove();
+    document.getElementById('cards-empty').classList.remove('hidden');
+  }
+}
+loadCards();
+
+/* CTA banner scroll reveal */
+ScrollTrigger.create({
+  trigger:'.cta-banner',start:'top 85%',
+  onEnter(){gsap.fromTo('.cta-banner',{opacity:0,y:36},{opacity:1,y:0,duration:.9,ease:'power3.out'})}
+});
 </script>
 </body>
 </html>

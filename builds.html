@@ -1,451 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Daily Ecommerce Builds — Makers Co</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            brand: { 500: '#6366f1', 600: '#4f46e5' },
-            accent: { 500: '#8b5cf6' }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; }
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#0e0a08;--bg2:#140f0a;--bg3:#1c1410;
+  --p1:#FFD3AC;--p2:#FFB5AB;--p3:#E39A7B;--p4:#DBB06B;
+  --t1:#fdf5ee;--t2:#b8957a;--t3:#7a6250;
+  --grad:linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);
+  --gtext:linear-gradient(135deg,#FFD3AC,#FFB5AB,#E39A7B);
+  --bdr:rgba(255,211,172,.09);--bdr2:rgba(255,211,172,.18);
+  --r:16px;--rlg:24px;--nav:72px;--max:1240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:var(--nav)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(227,154,123,.35);color:#fff}
 
-    /* Scroll progress bar */
-    #progress-bar {
-      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-      background: linear-gradient(90deg, #6366f1, #a78bfa, #ec4899);
-      z-index: 9999; transition: width 0.1s linear;
-    }
+/* cursor */
+#cur-dot{width:8px;height:8px;background:var(--p3);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s}
+#cur-ring{width:36px;height:36px;border:1.5px solid rgba(227,154,123,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,opacity .3s}
+#cur-dot.hov{width:0;height:0}#cur-ring.hov{width:52px;height:52px;border-color:rgba(227,154,123,.8)}
+@media(pointer:coarse){#cur-dot,#cur-ring{display:none}}
 
-    .gradient-text {
-      background: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); }
-    .nav-logo-mark{transition:transform .3s}
-    .prism-animate{animation:prism-spin 10s linear infinite}
-    @keyframes prism-spin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
+/* progress */
+#pb{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--grad);z-index:9997;transition:width .1s linear}
 
-    .glass {
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
+/* prism */
+.prism-mark{animation:pspin 10s linear infinite}
+@keyframes pspin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
 
-    .nav-link { color: #94a3b8; transition: color 0.2s; font-size: 0.875rem; font-weight: 500; }
-    .nav-link:hover, .nav-link.active { color: #e2e8f0; }
-    .nav-link.active { color: #a78bfa; }
+/* nav */
+#nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:100;padding:0 clamp(20px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:24px;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+#nav.scrolled{background:rgba(14,10,8,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-color:var(--bdr)}
+.n-logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:800;letter-spacing:-.04em;flex-shrink:0}
+.n-mark{width:34px;height:34px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .3s}
+.n-logo:hover .n-mark{transform:rotate(-8deg) scale(1.1)}
+.n-links{display:flex;align-items:center;gap:32px;list-style:none}
+.n-links a{font-size:13.5px;font-weight:500;color:var(--t2);transition:color .2s}
+.n-links a:hover,.n-links a.active{color:var(--t1)}
+.n-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;color:var(--t1);padding:9px 22px;border:1px solid var(--bdr2);border-radius:99px;background:rgba(255,211,172,.04);transition:all .25s;white-space:nowrap}
+.n-cta:hover{background:var(--grad);border-color:transparent;box-shadow:0 8px 28px rgba(227,154,123,.3)}
+.n-burger{display:none;background:none;border:none;color:var(--t1);font-size:20px;cursor:pointer;padding:4px}
 
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      box-shadow: 0 4px 20px rgba(99,102,241,0.35); transition: all 0.25s ease;
-    }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+/* mobile menu */
+#mmenu{position:fixed;inset:0;top:var(--nav);background:rgba(14,10,8,.97);backdrop-filter:blur(24px);z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transition:opacity .3s}
+#mmenu.open{opacity:1;pointer-events:all}
+#mmenu a{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,6vw,38px);font-weight:800;letter-spacing:-.04em;color:var(--t2);transition:color .2s}
+#mmenu a:hover{color:var(--t1)}
 
-    /* Back to top */
-    #back-top {
-      position: fixed; bottom: 5.5rem; right: 1.5rem; width: 44px; height: 44px;
-      background: rgba(99,102,241,0.85); border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s, transform 0.2s;
-      z-index: 90; color: white; font-size: 14px;
-    }
-    #back-top.visible { opacity: 1; }
-    #back-top:hover { transform: translateY(-2px); }
+/* layout */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
 
-    /* WhatsApp FAB */
-    #wa-fab {
-      position: fixed; bottom: 1.5rem; right: 1.5rem;
-      background: #25d366; border-radius: 50%; width: 52px; height: 52px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 90; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      transition: transform 0.2s, box-shadow 0.2s; color: white; font-size: 22px;
-    }
-    #wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+/* orbs */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);animation:ofloat 9s ease-in-out infinite}
+@keyframes ofloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-28px) scale(1.06)}66%{transform:translate(-16px,18px) scale(.94)}}
 
-    /* Daily Builds tabs */
-    .builds-tab {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #94a3b8;
-    }
-    .builds-tab:hover { color: #e2e8f0; border-color: rgba(99,102,241,0.4); }
-    .builds-tab.active-tab {
-      background: linear-gradient(135deg,#6366f1,#8b5cf6);
-      border-color: transparent;
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(99,102,241,0.35);
-    }
+/* hero */
+.hero{min-height:56vh;display:flex;align-items:center;padding-top:calc(var(--nav) + 48px);padding-bottom:64px;position:relative;overflow:hidden}
+.hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:20px;opacity:0;transform:translateY(12px)}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pdot 2.2s ease infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(42px,7vw,88px);font-weight:800;line-height:.98;letter-spacing:-.055em;margin-bottom:24px}
+.hero-title .ln{display:block;overflow:hidden}
+.hero-title .li{display:block;transform:translateY(110%)}
+.hero-title em{font-style:italic;background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(14px,1.4vw,17px);color:var(--t2);line-height:1.8;max-width:500px;opacity:0;transform:translateY(14px)}
+.divider{height:1px;background:var(--bdr)}
 
-    /* Build cards */
-    .build-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: all 0.3s ease;
-    }
-    .build-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(99,102,241,0.4);
-      box-shadow: 0 20px 40px rgba(99,102,241,0.12);
-    }
+/* filter tabs */
+.filter-wrap{padding:40px 0 32px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.ftab{display:inline-flex;align-items:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:.01em;padding:9px 20px;border:1px solid var(--bdr);border-radius:99px;background:rgba(255,211,172,.03);color:var(--t2);cursor:pointer;transition:all .25s;white-space:nowrap}
+.ftab:hover{border-color:var(--bdr2);color:var(--t1)}
+.ftab.on{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 20px rgba(227,154,123,.3)}
+.ftab i{font-size:12px}
 
-    @media (max-width: 768px) {
-      .desktop-nav { display: none !important; }
-      .mobile-menu-btn { display: block !important; }
-    }
-    @media (min-width: 769px) {
-      .mobile-menu-btn { display: none; }
-    }
-  </style>
+/* section */
+#builds-section{padding:0 0 120px;position:relative}
+
+/* grid */
+#builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+
+/* build card */
+.bc{
+  border:1px solid var(--bdr);border-radius:var(--rlg);
+  background:var(--bg2);padding:28px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:border-color .35s,box-shadow .35s,transform .35s cubic-bezier(.16,1,.3,1);
+  cursor:pointer;position:relative;overflow:hidden;
+  transform-style:preserve-3d;
+  opacity:0;transform:translateY(30px);
+}
+.bc::before{content:'';position:absolute;inset:0;background:var(--grad);opacity:0;transition:opacity .4s;border-radius:var(--rlg)}
+.bc:hover{border-color:rgba(227,154,123,.4);box-shadow:0 32px 60px rgba(0,0,0,.4),0 0 0 1px rgba(227,154,123,.14)}
+.bc:hover::before{opacity:.04}
+.bc-glow{position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;border-radius:50%;filter:blur(50px);opacity:0;transition:opacity .4s;pointer-events:none}
+.bc:hover .bc-glow{opacity:.4}
+.bc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.bc-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--bdr);background:rgba(255,211,172,.05)}
+.bc-meta{text-align:right}
+.bc-cat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:99px;border:1px solid var(--bdr2);background:rgba(255,211,172,.06);color:var(--p3)}
+.bc-date{font-size:11px;color:var(--t3);margin-top:3px}
+.bc-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.bc-tagline{font-size:13.5px;color:var(--t2);line-height:1.7}
+.bc-feats{list-style:none;display:flex;flex-direction:column;gap:6px;flex:1}
+.bc-feats li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--t2);line-height:1.5}
+.bc-feats li span{color:var(--p4);flex-shrink:0;margin-top:1px}
+.bc-designs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.bc-designs-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.bc-dtag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px}
+.bc-actions{display:flex;gap:9px;margin-top:auto}
+.bc-btn-main{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;padding:11px;border-radius:12px;background:var(--grad);color:#fff;transition:transform .2s,box-shadow .2s}
+.bc-btn-main:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(227,154,123,.35)}
+.bc-btn-ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;border:1px solid var(--bdr2);background:rgba(255,211,172,.04);color:var(--t2);font-size:14px;transition:all .25s}
+.bc-btn-ico:hover{border-color:var(--p3);color:var(--p3)}
+.bc-btn-wa{color:#25d366}
+.bc-btn-wa:hover{border-color:#25d366;color:#25d366}
+
+/* states */
+#builds-loading,#builds-empty,#builds-no-match{text-align:center;padding:80px 0}
+#builds-loading i{font-size:32px;color:var(--p3);display:block;margin-bottom:12px}
+#builds-loading p,#builds-empty p,#builds-no-match p{color:var(--t3);font-size:15px}
+#builds-empty i{font-size:36px;color:var(--p3);display:block;margin-bottom:14px}
+#builds-empty .empty-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--t1);margin:8px 0 6px}
+.hidden{display:none!important}
+
+/* footer link */
+#builds-footer{text-align:center;margin-top:48px}
+.view-all{display:inline-flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;padding:13px 28px;border:1px solid var(--bdr2);border-radius:99px;color:var(--t2);background:rgba(255,211,172,.04);transition:all .25s}
+.view-all:hover{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 8px 28px rgba(227,154,123,.3)}
+
+/* footer */
+footer{border-top:1px solid var(--bdr);padding:52px 0 40px}
+.foot-row{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+.foot-logo{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.04em}
+.foot-mark{width:30px;height:30px;background:var(--grad);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{font-size:13.5px;color:var(--t3);transition:color .2s}
+.foot-links a:hover{color:var(--t1)}
+.foot-copy{font-size:12.5px;color:var(--t3)}
+
+/* wa fab */
+#wafab{position:fixed;bottom:28px;right:28px;width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;z-index:80;box-shadow:0 8px 28px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s}
+#wafab:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,.55)}
+#btt{position:fixed;bottom:96px;right:28px;width:44px;height:44px;border-radius:50%;background:rgba(227,154,123,.85);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;cursor:pointer;opacity:0;transition:opacity .3s,transform .2s;z-index:80;border:none}
+#btt.show{opacity:1}#btt:hover{transform:translateY(-2px)}
+#toast{position:fixed;bottom:100px;right:28px;background:var(--p3);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;display:none;align-items:center;gap:9px;z-index:200;box-shadow:0 8px 28px rgba(227,154,123,.4)}
+
+/* sec heading */
+.sec-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p3);padding:5px 16px;border:1px solid rgba(227,154,123,.25);border-radius:99px;background:rgba(227,154,123,.06);margin-bottom:20px}
+.sec-head{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.045em}
+.sec-head em{font-style:italic;background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(40px)}
+.reveal.in{opacity:1;transform:translateY(0);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
+
+/* responsive */
+@media(max-width:860px){.n-links{display:none}.n-burger{display:block}#builds-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.filter-wrap{gap:7px}.ftab{font-size:12px;padding:8px 14px}.foot-row{flex-direction:column;text-align:center}}
+</style>
 </head>
 <body>
 
-<!-- Scroll progress bar -->
-<div id="progress-bar"></div>
+<div id="pb"></div>
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
 
-<!-- WhatsApp FAB -->
-<a id="wa-fab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%27m%20interested%20in%20your%20services." target="_blank" title="Chat on WhatsApp">
-  <i class="fab fa-whatsapp"></i>
-</a>
+<a id="wafab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg">Copied!</span></div>
 
-<!-- Back to top -->
-<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
-  <i class="fas fa-chevron-up"></i>
-</button>
+<div id="mmenu">
+  <a href="index.html" onclick="cm()">Home</a>
+  <a href="index.html#services" onclick="cm()">Services</a>
+  <a href="builds.html" class="active" onclick="cm()">Daily Builds</a>
+  <a href="designs.html" onclick="cm()">Designs</a>
+  <a href="cards.html" onclick="cm()">Biz Cards</a>
+  <a href="index.html#contact" onclick="cm()" style="background:var(--grad);padding:12px 32px;border-radius:99px;color:#fff;font-size:18px">Start a project →</a>
+</div>
 
-<!-- NAVBAR -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-  style="background: rgba(10,10,15,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-xl">
-    <div class="nav-logo-mark prism-animate" style="width:34px;height:34px;background:linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transform-style:preserve-3d"><svg viewBox="0 0 56 58" width="20" height="20" fill="none"><polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/><polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/><polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/><polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/><polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/><polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/></svg></div>      <span>Makers Co</span>
-    </a>
-
-    <ul class="desktop-nav hidden md:flex items-center gap-8">
-      <li><a href="index.html#home"     class="nav-link">Home</a></li>
-      <li><a href="index.html#services" class="nav-link">Services</a></li>
-      <li><a href="builds.html"         class="nav-link active">Daily Builds</a></li>
-      <li><a href="cards.html"          class="nav-link">Biz Cards</a></li>
-      <li><a href="designs.html"        class="nav-link">Designs</a></li>
-      <li><a href="index.html#tech"     class="nav-link">Tech Stack</a></li>
-      <li><a href="index.html#about"    class="nav-link">About</a></li>
-      <li><a href="index.html#contact"  class="nav-link">Contact</a></li>
-    </ul>
-
-    <a href="index.html#contact"
-      class="hidden md:inline-flex btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl items-center gap-2">
-      Get Started <i class="fas fa-arrow-right text-xs"></i>
-    </a>
-
-    <button class="mobile-menu-btn md:hidden text-gray-400 text-xl" onclick="toggleMenu()">
-      <i class="fas fa-bars" id="menu-icon"></i>
-    </button>
-  </div>
-
-  <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-    <ul class="flex flex-col gap-3">
-      <li><a href="index.html#home"     class="nav-link block py-1">Home</a></li>
-      <li><a href="index.html#services" class="nav-link block py-1">Services</a></li>
-      <li><a href="builds.html"         class="nav-link block py-1">Daily Builds</a></li>
-      <li><a href="cards.html"          class="nav-link block py-1">Biz Cards</a></li>
-      <li><a href="designs.html"        class="nav-link block py-1">Designs</a></li>
-      <li><a href="index.html#tech"     class="nav-link block py-1">Tech Stack</a></li>
-      <li><a href="index.html#about"    class="nav-link block py-1">About</a></li>
-      <li><a href="index.html#contact"  class="nav-link block py-1">Contact</a></li>
-    </ul>
-  </div>
+<nav id="nav">
+  <a href="index.html" class="n-logo">
+    <div class="n-mark prism-mark">
+      <svg viewBox="0 0 56 58" width="20" height="20" fill="none">
+        <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/>
+        <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/>
+        <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
+        <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
+        <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
+        <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/>
+      </svg>
+    </div>
+    <span>Makers Co</span>
+  </a>
+  <ul class="n-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="builds.html" class="active">Daily Builds</a></li>
+    <li><a href="designs.html">Designs</a></li>
+    <li><a href="cards.html">Biz Cards</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+  <a href="index.html#contact" class="n-cta">Start a project →</a>
+  <button class="n-burger" id="nbtn" onclick="tm()"><i class="fas fa-bars" id="bicon"></i></button>
 </nav>
 
-<!-- DAILY BUILDS -->
-<section id="builds" class="pt-32 pb-24 relative">
-  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)"></div>
-  <div class="max-w-6xl mx-auto px-6">
+<!-- HERO -->
+<section class="hero">
+  <div class="orb" style="width:500px;height:500px;background:rgba(255,181,171,.1);top:-100px;right:-80px;animation-delay:0s"></div>
+  <div class="orb" style="width:300px;height:300px;background:rgba(227,154,123,.07);bottom:0;left:20%;animation-delay:4s"></div>
+  <div class="wrap" style="width:100%">
+    <div class="hero-tag" id="htag"><span class="pulse-dot"></span>Built fresh · Every morning at 6am</div>
+    <h1 class="hero-title" id="htitle">
+      <span class="ln"><span class="li">Daily</span></span>
+      <span class="ln"><span class="li"><em>Ecommerce</em></span></span>
+      <span class="ln"><span class="li">Builds.</span></span>
+    </h1>
+    <p class="hero-sub" id="hsub">A complete, production-grade ecommerce tool shipped every single day. Analytics, automation, inventory, payments — pick your build and make it yours.</p>
+  </div>
+</section>
 
-    <div class="text-center mb-14">
-      <span class="glass inline-block px-4 py-2 rounded-full text-violet-300 text-sm font-medium mb-4">
-        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block mr-2"></span>
-        Built Daily
-      </span>
-      <h2 class="text-4xl lg:text-5xl font-black mb-4">Daily <span class="gradient-text">Ecommerce Builds</span></h2>
+<div class="divider"></div>
+
+<!-- BUILDS -->
+<section id="builds-section">
+  <div class="wrap">
+    <!-- filter tabs -->
+    <div class="filter-wrap" id="ftabs">
+      <button class="ftab on" onclick="filterBuilds('all')" data-cat="all"><i class="fas fa-th-large"></i> All</button>
+      <button class="ftab" onclick="filterBuilds('analytics')" data-cat="analytics"><i class="fas fa-chart-bar"></i> Analytics</button>
+      <button class="ftab" onclick="filterBuilds('automation')" data-cat="automation"><i class="fas fa-robot"></i> Automation</button>
+      <button class="ftab" onclick="filterBuilds('inventory')" data-cat="inventory"><i class="fas fa-boxes-stacked"></i> Inventory</button>
+      <button class="ftab" onclick="filterBuilds('marketing')" data-cat="marketing"><i class="fas fa-bullhorn"></i> Marketing</button>
+      <button class="ftab" onclick="filterBuilds('customer')" data-cat="customer"><i class="fas fa-users"></i> Customer</button>
+      <button class="ftab" onclick="filterBuilds('payments')" data-cat="payments"><i class="fas fa-credit-card"></i> Payments</button>
+      <button class="ftab" onclick="filterBuilds('logistics')" data-cat="logistics"><i class="fas fa-truck"></i> Logistics</button>
     </div>
 
-    <!-- Filter tabs -->
-    <div id="builds-tabs" class="flex flex-wrap justify-center gap-2 mb-10">
-      <button onclick="filterBuilds('all')" data-cat="all"
-        class="builds-tab active-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        All
-      </button>
-      <button onclick="filterBuilds('analytics')" data-cat="analytics"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Analytics
-      </button>
-      <button onclick="filterBuilds('automation')" data-cat="automation"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Automation
-      </button>
-      <button onclick="filterBuilds('inventory')" data-cat="inventory"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Inventory
-      </button>
-      <button onclick="filterBuilds('marketing')" data-cat="marketing"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Marketing
-      </button>
-      <button onclick="filterBuilds('customer')" data-cat="customer"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Customer
-      </button>
-      <button onclick="filterBuilds('payments')" data-cat="payments"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Payments
-      </button>
-      <button onclick="filterBuilds('logistics')" data-cat="logistics"
-        class="builds-tab px-4 py-2 rounded-full text-sm font-semibold transition-all">
-        Logistics
-      </button>
+    <div id="builds-grid"></div>
+
+    <div id="builds-loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading today's builds...</p>
     </div>
 
-    <!-- Project grid -->
-    <div id="builds-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-    <!-- Loading state -->
-    <div id="builds-loading" class="text-center py-16">
-      <i class="fas fa-spinner fa-spin text-indigo-400 text-3xl mb-4 block"></i>
-      <p class="text-gray-500">Loading daily builds...</p>
+    <div id="builds-empty" class="hidden">
+      <i class="fas fa-clock"></i>
+      <p class="empty-title">First build ships tomorrow at 6am!</p>
+      <p>Check back then — a fresh ecommerce tool will appear right here.</p>
     </div>
 
-    <!-- Empty state -->
-    <div id="builds-empty" class="hidden text-center py-16 glass rounded-2xl">
-      <i class="fas fa-clock text-indigo-400 text-4xl mb-4 block"></i>
-      <p class="text-white font-bold text-xl mb-2">First build ships tomorrow morning at 6am!</p>
-      <p class="text-gray-400">Check back then — a fresh ecommerce tool will appear right here.</p>
+    <div id="builds-no-match" class="hidden">
+      <p>No builds in this category yet. More coming soon!</p>
     </div>
 
-    <!-- No filter match -->
-    <div id="builds-no-match" class="hidden text-center py-10">
-      <p class="text-gray-500">No builds in this category yet. More coming soon!</p>
-    </div>
-
-    <!-- View all link -->
-    <div id="builds-footer" class="hidden text-center mt-10">
-      <a href="https://lousycoder96.github.io/ecommerce-daily-builds/"
-        target="_blank"
-        class="glass inline-flex items-center gap-2 px-6 py-3 rounded-xl text-gray-300 font-semibold hover:border-indigo-500 hover:text-white transition-colors">
-        <i class="fas fa-th-large"></i>
-        Browse All Daily Builds
-        <i class="fas fa-arrow-right text-xs"></i>
+    <div id="builds-footer" class="hidden">
+      <a href="https://lousycoder96.github.io/ecommerce-daily-builds/" target="_blank" class="view-all">
+        <i class="fas fa-th-large"></i> Browse All Daily Builds <i class="fas fa-arrow-right" style="font-size:12px"></i>
       </a>
     </div>
-
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer style="background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06)">
-  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-    <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-lg">
-      <span class="gradient-bg w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs"><i class="fas fa-wand-magic-sparkles"></i></span>
-      <span>Makers Co</span>
-    </a>
-    <p class="text-gray-500 text-sm">© 2025 Makers Co. All rights reserved. | Kuala Lumpur, Malaysia</p>
-    <div class="flex gap-4 text-sm text-gray-500">
-      <a href="index.html#services" class="hover:text-gray-300 transition-colors">Services</a>
-      <a href="index.html#about"    class="hover:text-gray-300 transition-colors">About</a>
-      <a href="index.html#contact"  class="hover:text-gray-300 transition-colors">Contact</a>
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <a href="index.html" class="foot-logo">
+        <div class="foot-mark prism-mark">
+          <svg viewBox="0 0 56 58" width="16" height="16" fill="none">
+            <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.9)"/>
+            <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.65)"/>
+            <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
+            <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
+            <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
+            <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.2)"/>
+          </svg>
+        </div>
+        <span>Makers Co</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#services">Services</a>
+        <a href="builds.html">Daily Builds</a>
+        <a href="designs.html">Designs</a>
+        <a href="cards.html">Biz Cards</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <p class="foot-copy">© 2025 Makers Co · Kuala Lumpur, Malaysia</p>
     </div>
   </div>
 </footer>
 
-<!-- Toast -->
-<div id="toast" class="fixed bottom-20 right-6 hidden items-center gap-3 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold z-50">
-  <i class="fas fa-check-circle"></i>
-  <span id="toast-msg">Copied!</span>
-</div>
-
 <script>
-  // ── Toast ──────────────────────────────────────────────
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    toast.classList.remove('hidden');
-    toast.classList.add('flex');
-    clearTimeout(window._toastTimer);
-    window._toastTimer = setTimeout(() => {
-      toast.classList.add('hidden');
-      toast.classList.remove('flex');
-    }, 2800);
-  }
+gsap.registerPlugin(ScrollTrigger);
 
-  // ── Mobile menu ────────────────────────────────────────
-  function toggleMenu() {
-    const menu = document.getElementById('mobile-menu');
-    const icon = document.getElementById('menu-icon');
-    menu.classList.toggle('hidden');
-    icon.classList.toggle('fa-bars');
-    icon.classList.toggle('fa-times');
-  }
+/* ── hero entrance ── */
+window.addEventListener('DOMContentLoaded',()=>{
+  const tl = gsap.timeline({defaults:{ease:'power4.out'}});
+  tl.to('#htag',{opacity:1,y:0,duration:.8,delay:.3})
+    .to('.hero-title .li',{y:'0%',duration:1.1,stagger:.1},'-=.4')
+    .to('#hsub',{opacity:1,y:0,duration:.85},'-=.6');
+});
 
-  // ── Daily Builds ──────────────────────────────────────
-  const PROJECTS_JSON_URL =
-    'https://raw.githubusercontent.com/lousycoder96/ecommerce-daily-builds/main/projects.json';
+/* ── cursor ── */
+const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function raf(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(raf)})();
+document.querySelectorAll('a,button,.bc,.ftab').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.classList.add('hov');ring.classList.add('hov')});
+  el.addEventListener('mouseleave',()=>{dot.classList.remove('hov');ring.classList.remove('hov')});
+});
 
-  const CAT_ICONS = {
-    analytics:'fa-chart-bar', automation:'fa-robot', customer:'fa-users',
-    inventory:'fa-boxes-stacked', marketing:'fa-bullhorn', payments:'fa-credit-card',
-    logistics:'fa-truck'
-  };
-  const CAT_COLORS = {
-    analytics:'bg-sky-500/20 text-sky-300', automation:'bg-violet-500/20 text-violet-300',
-    customer:'bg-emerald-500/20 text-emerald-300', inventory:'bg-amber-500/20 text-amber-300',
-    marketing:'bg-pink-500/20 text-pink-300', payments:'bg-green-500/20 text-green-300',
-    logistics:'bg-orange-500/20 text-orange-300'
-  };
-  const ICON_BG = {
-    indigo:'background:rgba(99,102,241,0.15)', violet:'background:rgba(139,92,246,0.15)',
-    emerald:'background:rgba(16,185,129,0.15)', orange:'background:rgba(249,115,22,0.15)',
-    sky:'background:rgba(14,165,233,0.15)', rose:'background:rgba(244,63,94,0.15)'
-  };
+/* ── nav scroll ── */
+const navEl=document.getElementById('nav'),btt=document.getElementById('btt');
+window.addEventListener('scroll',()=>{
+  navEl.classList.toggle('scrolled',scrollY>50);
+  btt.classList.toggle('show',scrollY>500);
+  document.getElementById('pb').style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+},{passive:true});
 
-  let allBuilds = [];
-  let activeFilter = 'all';
+/* ── mobile menu ── */
+let mo=false;
+function tm(){mo=!mo;document.getElementById('mmenu').classList.toggle('open',mo);document.getElementById('bicon').className=mo?'fas fa-times':'fas fa-bars';document.body.style.overflow=mo?'hidden':'';}
+function cm(){mo=false;document.getElementById('mmenu').classList.remove('open');document.getElementById('bicon').className='fas fa-bars';document.body.style.overflow='';}
 
-  function buildCard(p) {
-    const catClass = CAT_COLORS[p.category] || 'bg-indigo-500/20 text-indigo-300';
-    const icon     = CAT_ICONS[p.category]  || 'fa-code';
-    const iconBg   = ICON_BG[p.color]       || ICON_BG.indigo;
-    const feats    = (p.features || []).slice(0, 4)
-      .map(f => `<li class="flex items-start gap-2 text-xs text-gray-400"><span class="text-green-400 mt-0.5 flex-shrink-0">✓</span>${f}</li>`)
-      .join('');
-    const waMsg = encodeURIComponent(`Hi Makers Co! I'm interested in a tool like "${p.title}". Can we discuss building this for my business?`);
+/* ── reveal ── */
+const rio=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');rio.unobserve(x.target)}}),{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>rio.observe(el));
 
-    return `
-      <div class="build-card rounded-2xl p-6 flex flex-col" data-cat="${p.category}">
-        <div class="flex items-start justify-between mb-4">
-          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-lg" style="${iconBg}">
-            <i class="fas ${icon}" style="color:inherit;opacity:0.85"></i>
-          </div>
-          <div class="text-right">
-            <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${catClass}">${p.category}</span>
-            <div class="text-gray-600 text-xs mt-1">${p.date}</div>
-          </div>
-        </div>
-        <h3 class="text-lg font-bold text-white mb-1 leading-snug">${p.title}</h3>
-        <p class="text-gray-400 text-sm mb-4 leading-relaxed">${p.tagline}</p>
-        <ul class="space-y-1.5 mb-4 flex-1">${feats}</ul>
-
-        ${(p.designs && p.designs.length) ? `
-        <div class="mb-4">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Daily Designs</span>
-            ${p.figma_plugin_url ? `<a href="${p.figma_plugin_url}" target="_blank" onclick="event.stopPropagation()"
-              class="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-semibold">
-              <svg width="12" height="12" viewBox="0 0 38 57" fill="none"><path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z" fill="#1ABCFE"/><path d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z" fill="#0ACF83"/><path d="M19 0V19H28.5C33.7467 19 38 14.7467 38 9.5C38 4.25329 33.7467 0 28.5 0H19Z" fill="#FF7262"/><path d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z" fill="#F24E1E"/><path d="M0 28.5C0 33.7467 4.25329 38 9.5 38H19V19H9.5C4.25329 19 0 23.2533 0 28.5Z" fill="#A259FF"/></svg>
-              Figma Plugin
-            </a>` : ''}
-          </div>
-          <div class="flex gap-1.5 flex-wrap">
-            ${p.designs.slice(0,5).map(d => `
-              <a href="${d.url || d.preview_url}" target="_blank" onclick="event.stopPropagation()"
-                class="text-xs px-2.5 py-1 rounded-lg font-medium transition-all hover:opacity-90"
-                style="background:${d.color}22; color:${d.color}; border:1px solid ${d.color}44"
-                title="${d.brand} — ${d.style}">
-                ${d.type}
-              </a>`).join('')}
-          </div>
-        </div>` : ''}
-
-        <div class="flex gap-2 mt-auto">
-          <a href="${p.preview_url || p.repo_url}" target="_blank"
-            class="btn-primary flex-1 text-white text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-1.5"
-            onclick="event.stopPropagation()">
-            <i class="fas fa-eye text-xs"></i> Preview
-          </a>
-          <a href="mailto:soonfookwg96@gmail.com?subject=Request: ${p.title} source code"
-            class="glass text-indigo-300 text-sm font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center hover:border-indigo-500 hover:text-white transition-colors"
-            onclick="event.stopPropagation()" title="Request source code">
-            <i class="fas fa-code"></i>
-          </a>
-          <a href="https://wa.me/60172996254?text=${waMsg}" target="_blank"
-            class="glass text-green-400 text-sm font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center hover:border-green-500 transition-colors"
-            onclick="event.stopPropagation()" title="Enquire on WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-        </div>
-      </div>`;
-  }
-
-  function renderBuilds(filter) {
-    const grid    = document.getElementById('builds-grid');
-    const empty   = document.getElementById('builds-empty');
-    const noMatch = document.getElementById('builds-no-match');
-    const footer  = document.getElementById('builds-footer');
-
-    const withProject = allBuilds.filter(p => p.title && (p.preview_url || p.repo_url));
-    const filtered = filter === 'all' ? withProject : withProject.filter(p => p.category === filter);
-
-    grid.innerHTML = '';
-    empty.classList.add('hidden');
-    noMatch.classList.add('hidden');
-    footer.classList.add('hidden');
-
-    if (withProject.length === 0) {
-      empty.classList.remove('hidden');
-      return;
-    }
-    if (filtered.length === 0) {
-      noMatch.classList.remove('hidden');
-      return;
-    }
-
-    filtered.forEach(p => { grid.innerHTML += buildCard(p); });
-    footer.classList.remove('hidden');
-  }
-
-  function filterBuilds(cat) {
-    activeFilter = cat;
-    document.querySelectorAll('.builds-tab').forEach(btn => {
-      btn.classList.toggle('active-tab', btn.dataset.cat === cat);
-    });
-    renderBuilds(cat);
-  }
-
-  async function loadBuilds() {
-    try {
-      const r = await fetch(`${PROJECTS_JSON_URL}?t=${Date.now()}`);
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      allBuilds = await r.json();
-    } catch (e) {
-      console.warn('Daily builds not available yet:', e.message);
-      allBuilds = [];
-    }
-    document.getElementById('builds-loading').remove();
-    renderBuilds(activeFilter);
-  }
-
-  loadBuilds();
-
-  // ── Scroll: progress bar, back-to-top ─────────────────
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    const total = document.body.scrollHeight - window.innerHeight;
-    document.getElementById('progress-bar').style.width = `${(scrolled / total) * 100}%`;
-
-    const backTop = document.getElementById('back-top');
-    scrolled > 400 ? backTop.classList.add('visible') : backTop.classList.remove('visible');
+/* ── 3D card tilt ── */
+function initTilt(card){
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width-.5)*14;
+    const y=((e.clientY-r.top)/r.height-.5)*-14;
+    card.style.transform=`perspective(900px) rotateX(${y}deg) rotateY(${x}deg) translateY(-4px)`;
   });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+    card.style.transition='transform .55s cubic-bezier(.34,1.56,.64,1),border-color .35s,box-shadow .35s';
+    setTimeout(()=>card.style.transition='',600);
+  });
+  /* cursor glow */
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1);
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1);
+    card.style.background=`radial-gradient(circle at ${x}% ${y}%, rgba(255,211,172,.07) 0%, #140f0a 55%)`;
+  });
+  card.addEventListener('mouseleave',()=>card.style.background='');
+}
+
+/* ── toast ── */
+function toast(m){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=m;t.style.display='flex';clearTimeout(window._t);window._t=setTimeout(()=>t.style.display='none',3000)}
+
+/* ── builds data ── */
+const JSON_URL='https://raw.githubusercontent.com/lousycoder96/ecommerce-daily-builds/main/projects.json';
+let allBuilds=[],activeFilter='all';
+
+const CAT_ICONS={analytics:'fa-chart-bar',automation:'fa-robot',customer:'fa-users',inventory:'fa-boxes-stacked',marketing:'fa-bullhorn',payments:'fa-credit-card',logistics:'fa-truck'};
+const ICON_COLORS={analytics:'#60a5fa',automation:'#a78bfa',customer:'#34d399',inventory:'#fbbf24',marketing:'#f472b6',payments:'#4ade80',logistics:'#fb923c'};
+const CARD_GLOWS={analytics:'#60a5fa',automation:'#a78bfa',customer:'#34d399',inventory:'#fbbf24',marketing:'#f472b6',payments:'#4ade80',logistics:'#fb923c'};
+
+function buildCard(p){
+  const icon=CAT_ICONS[p.category]||'fa-code';
+  const icol=ICON_COLORS[p.category]||'#E39A7B';
+  const glow=CARD_GLOWS[p.category]||'#E39A7B';
+  const waMsg=encodeURIComponent(`Hi Makers Co! I'm interested in "${p.title}". Can we discuss?`);
+  const feats=(p.features||[]).slice(0,4).map(f=>`<li><span>✓</span>${f}</li>`).join('');
+  const designs=(p.designs&&p.designs.length)?`
+    <div>
+      <div class="bc-designs-lbl">Daily Designs</div>
+      <div class="bc-designs">${p.designs.slice(0,5).map(d=>`
+        <a href="${d.url||d.preview_url}" target="_blank" onclick="event.stopPropagation()" class="bc-dtag"
+          style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${d.type}</a>`).join('')}
+      </div>
+    </div>`:'';
+  return `<div class="bc" data-cat="${p.category}">
+    <div class="bc-glow" style="background:${glow}"></div>
+    <div class="bc-top">
+      <div class="bc-icon" style="color:${icol}"><i class="fas ${icon}"></i></div>
+      <div class="bc-meta">
+        <div class="bc-cat">${p.category}</div>
+        <div class="bc-date">${p.date||''}</div>
+      </div>
+    </div>
+    <div class="bc-title">${p.title}</div>
+    <div class="bc-tagline">${p.tagline||''}</div>
+    <ul class="bc-feats">${feats}</ul>
+    ${designs}
+    <div class="bc-actions">
+      <a href="${p.preview_url||p.repo_url}" target="_blank" class="bc-btn-main" onclick="event.stopPropagation()">
+        <i class="fas fa-eye" style="font-size:12px"></i> Preview
+      </a>
+      <a href="mailto:soonfookwg96@gmail.com?subject=Request: ${p.title}" class="bc-btn-ico" onclick="event.stopPropagation()" title="Request source code"><i class="fas fa-code"></i></a>
+      <a href="https://wa.me/60172996254?text=${waMsg}" target="_blank" class="bc-btn-ico bc-btn-wa" onclick="event.stopPropagation()" title="Enquire on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>`;
+}
+
+function renderBuilds(filter){
+  const grid=document.getElementById('builds-grid');
+  const empty=document.getElementById('builds-empty');
+  const noMatch=document.getElementById('builds-no-match');
+  const footer=document.getElementById('builds-footer');
+  const withP=allBuilds.filter(p=>p.title&&(p.preview_url||p.repo_url));
+  const filtered=filter==='all'?withP:withP.filter(p=>p.category===filter);
+  grid.innerHTML='';empty.classList.add('hidden');noMatch.classList.add('hidden');footer.classList.add('hidden');
+  if(!withP.length){empty.classList.remove('hidden');return}
+  if(!filtered.length){noMatch.classList.remove('hidden');return}
+  filtered.forEach(p=>grid.innerHTML+=buildCard(p));
+  footer.classList.remove('hidden');
+  /* animate new cards in */
+  gsap.fromTo('.bc',{opacity:0,y:30},{opacity:1,y:0,duration:.6,stagger:.07,ease:'power3.out',
+    onComplete(){document.querySelectorAll('.bc').forEach(c=>initTilt(c))}
+  });
+}
+
+function filterBuilds(cat){
+  activeFilter=cat;
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.toggle('on',b.dataset.cat===cat));
+  /* ripple on clicked tab */
+  gsap.fromTo(`[data-cat="${cat}"]`,{scale:.92},{scale:1,duration:.3,ease:'back.out(2)'});
+  renderBuilds(cat);
+}
+
+async function loadBuilds(){
+  try{
+    const r=await fetch(`${JSON_URL}?t=${Date.now()}`);
+    if(!r.ok)throw new Error(r.status);
+    allBuilds=await r.json();
+  }catch(e){console.warn('builds:',e.message);allBuilds=[]}
+  document.getElementById('builds-loading').remove();
+  renderBuilds(activeFilter);
+}
+loadBuilds();
 </script>
 </body>
 </html>
