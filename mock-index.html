@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Makers Co — [MOCK] Premium Redesign</title>
+
+  <!-- Fonts: Space Grotesk (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- GSAP + ScrollTrigger (free, 3.13+) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:         #080810;
+  --bg-2:       #0d0d1c;
+  --bg-3:       #111124;
+  --surface:    rgba(255,255,255,0.03);
+  --border:     rgba(255,255,255,0.07);
+  --border-2:   rgba(255,255,255,0.12);
+  --t1:         #f8fafc;
+  --t2:         #94a3b8;
+  --t3:         #475569;
+  --accent:     #6366f1;
+  --accent-2:   #8b5cf6;
+  --accent-3:   #ec4899;
+  --grad:       linear-gradient(135deg,#6366f1 0%,#8b5cf6 55%,#ec4899 100%);
+  --grad-text:  linear-gradient(135deg,#818cf8,#a78bfa,#f472b6);
+  --radius:     16px;
+  --radius-lg:  24px;
+  --max-w:      1240px;
+  --nav-h:      72px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:var(--nav-h)}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--t1);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+img{max-width:100%;display:block}
+::selection{background:rgba(99,102,241,0.35);color:#fff}
+
+/* ═══════════════════════════════════════════════
+   CUSTOM CURSOR (desktop only)
+═══════════════════════════════════════════════ */
+#cur-dot{
+  width:8px;height:8px;
+  background:var(--accent);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s,opacity .3s;
+}
+#cur-ring{
+  width:36px;height:36px;
+  border:1.5px solid rgba(99,102,241,.45);
+  border-radius:50%;
+  position:fixed;top:0;left:0;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s,border-color .3s,opacity .3s;
+}
+#cur-dot.hover{width:0;height:0;background:transparent}
+#cur-ring.hover{width:52px;height:52px;border-color:rgba(99,102,241,.8)}
+#cur-dot.hidden-cur,#cur-ring.hidden-cur{opacity:0}
+@media(pointer:coarse){#cur-dot,#cur-ring{display:none}}
+
+/* ═══════════════════════════════════════════════
+   PAGE LOADER
+═══════════════════════════════════════════════ */
+#loader{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:9990;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:28px;
+}
+.loader-wordmark{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;font-weight:800;letter-spacing:-.05em;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  opacity:0;transform:translateY(16px);
+}
+.loader-track{
+  width:180px;height:2px;
+  background:rgba(255,255,255,.06);
+  border-radius:99px;overflow:hidden;
+}
+.loader-fill{
+  height:100%;width:0%;
+  background:var(--grad);
+  border-radius:99px;
+  transition:width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.loader-pct{
+  font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--t3);
+  opacity:0;
+}
+
+/* ═══════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════ */
+#progress-bar{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:var(--grad);z-index:9997;
+  transition:width .12s linear;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--nav-h);z-index:100;
+  padding:0 clamp(20px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  transition:background .4s,border-color .4s,backdrop-filter .4s;
+  border-bottom:1px solid transparent;
+}
+#nav.scrolled{
+  background:rgba(8,8,16,.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-color:var(--border);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:19px;font-weight:800;letter-spacing:-.04em;
+  flex-shrink:0;
+}
+.nav-logo-mark{
+  width:34px;height:34px;
+  background:var(--grad);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;
+  transition:transform .3s;
+}
+.nav-logo:hover .nav-logo-mark{transform:rotate(-8deg) scale(1.08)}
+.nav-links{
+  display:flex;align-items:center;gap:36px;list-style:none;
+}
+.nav-links a{
+  font-size:13.5px;font-weight:500;color:var(--t2);
+  transition:color .2s;letter-spacing:.005em;
+}
+.nav-links a:hover{color:var(--t1)}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13.5px;font-weight:700;
+  color:var(--t1);
+  padding:9px 22px;
+  border:1px solid var(--border-2);border-radius:99px;
+  background:var(--surface);
+  transition:all .25s;white-space:nowrap;letter-spacing:-.01em;
+}
+.nav-cta:hover{
+  background:var(--grad);border-color:transparent;
+  box-shadow:0 8px 28px rgba(99,102,241,.3);
+}
+.nav-burger{
+  display:none;background:none;border:none;
+  color:var(--t1);font-size:20px;cursor:pointer;padding:4px;
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════════════ */
+#mob-menu{
+  position:fixed;inset:0;top:var(--nav-h);
+  background:rgba(8,8,16,.97);backdrop-filter:blur(24px);
+  z-index:99;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+#mob-menu.open{opacity:1;pointer-events:all}
+#mob-menu a{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(28px,6vw,40px);font-weight:800;letter-spacing:-.04em;
+  color:var(--t2);transition:color .2s;
+}
+#mob-menu a:hover{color:var(--t1)}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+section{position:relative;overflow:hidden}
+.divider{height:1px;background:var(--border)}
+
+/* ═══════════════════════════════════════════════
+   AMBIENT ORBS
+═══════════════════════════════════════════════ */
+.orb{
+  position:absolute;border-radius:50%;
+  pointer-events:none;filter:blur(90px);
+  animation:orb-move 9s ease-in-out infinite;
+}
+.orb-a{width:560px;height:560px;background:rgba(99,102,241,.11);top:-140px;right:-120px;animation-delay:0s}
+.orb-b{width:380px;height:380px;background:rgba(139,92,246,.08);bottom:80px;right:240px;animation-delay:3.5s}
+.orb-c{width:260px;height:260px;background:rgba(236,72,153,.06);top:44%;left:42%;animation-delay:6.5s}
+@keyframes orb-move{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(24px,-32px) scale(1.06)}
+  66%{transform:translate(-18px,22px) scale(.94)}
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITIES: gradient text, section labels
+═══════════════════════════════════════════════ */
+.g-text{
+  background:var(--grad-text);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sec-tag{
+  display:inline-block;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);
+  padding:5px 16px;
+  border:1px solid rgba(99,102,241,.25);border-radius:99px;
+  background:rgba(99,102,241,.06);
+  margin-bottom:24px;
+}
+.sec-head{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(38px,5.5vw,68px);
+  font-weight:800;line-height:1.04;letter-spacing:-.045em;
+}
+.sec-sub{
+  font-size:clamp(15px,1.4vw,17px);
+  color:var(--t2);line-height:1.8;
+  max-width:520px;
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+.btn-primary{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:-.02em;
+  color:#fff;padding:14px 30px;
+  background:var(--grad);border-radius:99px;border:none;
+  cursor:pointer;white-space:nowrap;
+  transition:transform .25s,box-shadow .25s;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 44px rgba(99,102,241,.38);
+}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:-.02em;
+  color:var(--t2);padding:13px 28px;
+  border:1px solid var(--border-2);border-radius:99px;
+  background:transparent;cursor:pointer;white-space:nowrap;
+  transition:all .25s;
+}
+.btn-ghost:hover{color:var(--t1);border-color:rgba(255,255,255,.22)}
+
+/* ═══════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(44px)}
+.reveal.in{
+  opacity:1;transform:translateY(0);
+  transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);
+}
+.reveal-up{opacity:0;transform:translateY(28px)}
+.reveal-up.in{
+  opacity:1;transform:translateY(0);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+#home{
+  min-height:100svh;
+  display:flex;align-items:center;
+  padding:calc(var(--nav-h) + 60px) 0 100px;
+}
+.hero-inner{width:100%}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--t2);
+  opacity:0;transform:translateY(12px);
+  margin-bottom:36px;
+}
+.hero-dot{
+  width:7px;height:7px;border-radius:50%;background:#22c55e;
+  animation:dot-pulse 2.2s ease infinite;
+}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+
+.hero-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(54px,9vw,116px);
+  font-weight:800;line-height:.98;letter-spacing:-.055em;
+  margin-bottom:52px;
+}
+.hero-title .line{display:block;overflow:hidden}
+.hero-title .li{display:block;transform:translateY(110%)}
+.hero-title em{font-style:italic}
+
+.hero-bottom{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:48px;flex-wrap:wrap;
+}
+.hero-copy{
+  font-size:clamp(15px,1.5vw,18px);
+  color:var(--t2);line-height:1.78;max-width:460px;
+  opacity:0;transform:translateY(16px);
+}
+.hero-actions{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  opacity:0;transform:translateY(16px);
+}
+.hero-stats-bar{
+  display:flex;align-items:center;gap:0;flex-wrap:wrap;
+  margin-top:72px;padding-top:40px;
+  border-top:1px solid var(--border);
+  opacity:0;transform:translateY(16px);
+}
+.hs-item{padding:0 40px 0 0;display:flex;flex-direction:column;gap:5px}
+.hs-item:first-child{padding-left:0}
+.hs-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;font-weight:800;letter-spacing:-.05em;
+  background:var(--grad-text);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hs-label{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--t3)}
+.hs-div{width:1px;height:44px;background:var(--border);margin-right:40px;align-self:center}
+
+/* ═══════════════════════════════════════════════
+   TICKER STRIP
+═══════════════════════════════════════════════ */
+.ticker{
+  padding:20px 0;
+  background:rgba(99,102,241,.05);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;
+  mask:linear-gradient(90deg,transparent,black 12%,black 88%,transparent);
+  -webkit-mask:linear-gradient(90deg,transparent,black 12%,black 88%,transparent);
+}
+.ticker-track{
+  display:flex;width:max-content;
+  animation:ticker-scroll 28s linear infinite;
+}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:16px;
+  padding:0 32px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--t3);white-space:nowrap;
+}
+.ticker-sep{color:var(--accent);font-size:18px}
+
+/* ═══════════════════════════════════════════════
+   SERVICES
+═══════════════════════════════════════════════ */
+#services{padding:128px 0}
+.svc-header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:40px;margin-bottom:72px;flex-wrap:wrap;
+}
+.svc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.svc-card{
+  background:var(--bg);padding:40px;
+  display:flex;flex-direction:column;gap:14px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:background .35s;
+}
+.svc-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--grad);opacity:0;transition:opacity .4s;
+}
+.svc-card:hover{background:var(--bg-2)}
+.svc-card:hover::before{opacity:.05}
+.svc-num{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--t3)}
+.svc-icon{
+  width:50px;height:50px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  transition:background .3s,border-color .3s;margin-top:4px;
+}
+.svc-card:hover .svc-icon{border-color:rgba(99,102,241,.35);background:rgba(99,102,241,.08)}
+.svc-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em}
+.svc-desc{font-size:13.5px;color:var(--t2);line-height:1.72}
+.svc-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.pill{font-size:11px;font-weight:500;color:var(--t3);padding:4px 11px;border:1px solid var(--border);border-radius:99px}
+.svc-arrow{
+  width:34px;height:34px;border:1px solid var(--border);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--t3);margin-top:auto;align-self:flex-start;
+  transition:all .25s;
+}
+.svc-card:hover .svc-arrow{background:var(--accent);border-color:var(--accent);color:#fff;transform:translate(3px,-3px)}
+
+/* ═══════════════════════════════════════════════
+   PROCESS
+═══════════════════════════════════════════════ */
+#process{padding:128px 0}
+.proc-header{margin-bottom:88px}
+.proc-steps{display:flex;flex-direction:column}
+.proc-step{
+  display:grid;grid-template-columns:72px 1fr 72px;
+  gap:40px;align-items:start;
+  padding:52px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.proc-step:first-child{border-top:1px solid var(--border)}
+.proc-n{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--t3);padding-top:4px;
+}
+.proc-body{display:flex;flex-direction:column;gap:16px}
+.proc-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(26px,3.2vw,40px);font-weight:800;letter-spacing:-.04em;
+  transition:color .25s;
+}
+.proc-step:hover .proc-title{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.proc-desc{font-size:15px;color:var(--t2);line-height:1.78;max-width:580px}
+.proc-icon{
+  width:56px;height:56px;border:1px solid var(--border);border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--t2);flex-shrink:0;justify-self:end;
+  transition:all .3s;align-self:start;
+}
+.proc-step:hover .proc-icon{border-color:rgba(99,102,241,.45);background:rgba(99,102,241,.07);color:var(--accent)}
+
+/* ═══════════════════════════════════════════════
+   WORK / CATEGORIES
+═══════════════════════════════════════════════ */
+#work{padding:128px 0}
+.work-header{margin-bottom:72px}
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.work-card{
+  position:relative;overflow:hidden;
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  background:var(--surface);padding:40px;
+  display:flex;flex-direction:column;gap:20px;
+  min-height:340px;cursor:pointer;
+  transition:border-color .35s,transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s;
+}
+.work-card:hover{
+  border-color:rgba(99,102,241,.4);
+  transform:translateY(-8px);
+  box-shadow:0 40px 80px rgba(0,0,0,.45),0 0 0 1px rgba(99,102,241,.18);
+}
+.work-card-glow{
+  position:absolute;bottom:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  filter:blur(60px);opacity:0;transition:opacity .4s;
+}
+.work-card:hover .work-card-glow{opacity:.35}
+.wc-num{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+.wc-icon{
+  width:56px;height:56px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.wc-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(22px,2.4vw,28px);font-weight:800;letter-spacing:-.04em;line-height:1.15;
+  flex:1;
+}
+.wc-desc{font-size:14px;color:var(--t2);line-height:1.68}
+.wc-link{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+  color:var(--t3);transition:color .2s;
+}
+.work-card:hover .wc-link{color:var(--t1)}
+
+/* ═══════════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════════ */
+#stats{padding:128px 0;background:var(--bg-2)}
+.stats-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.stats-lhs{display:flex;flex-direction:column;gap:32px}
+.stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;
+}
+.s-cell{background:var(--bg-2);padding:40px 32px;display:flex;flex-direction:column;gap:8px}
+.s-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(40px,5vw,56px);font-weight:800;letter-spacing:-.06em;line-height:1;
+  background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s-label{font-size:13.5px;color:var(--t2);line-height:1.55;font-weight:500}
+
+/* ═══════════════════════════════════════════════
+   TECH MARQUEE
+═══════════════════════════════════════════════ */
+#tech{padding:80px 0;overflow:hidden}
+.tech-eyebrow{
+  text-align:center;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:44px;
+}
+.marq-wrap{
+  overflow:hidden;
+  mask:linear-gradient(90deg,transparent,black 14%,black 86%,transparent);
+  -webkit-mask:linear-gradient(90deg,transparent,black 14%,black 86%,transparent);
+}
+.marq-track{display:flex;width:max-content;animation:marq 26s linear infinite}
+.marq-track:hover{animation-play-state:paused}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 22px;margin-right:12px;
+  border:1px solid var(--border);border-radius:99px;
+  font-size:14px;font-weight:500;color:var(--t2);white-space:nowrap;
+  background:var(--surface);transition:all .25s;
+}
+.t-chip:hover{border-color:rgba(99,102,241,.4);color:var(--t1)}
+.t-chip i{font-size:17px}
+
+/* ═══════════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════════ */
+#about{padding:128px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:start}
+.about-quote{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(30px,3.8vw,48px);font-weight:800;letter-spacing:-.05em;line-height:1.1;
+}
+.about-quote em{font-style:italic}
+.about-body{display:flex;flex-direction:column;gap:24px}
+.about-body p{font-size:15.5px;color:var(--t2);line-height:1.82}
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.ab-card{
+  padding:20px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--surface);display:flex;flex-direction:column;gap:6px;
+  transition:border-color .25s;
+}
+.ab-card:hover{border-color:rgba(99,102,241,.32)}
+.ab-icon{font-size:18px;margin-bottom:2px}
+.ab-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;letter-spacing:-.02em}
+.ab-sub{font-size:12px;color:var(--t3)}
+
+/* ═══════════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════════ */
+#faq{padding:128px 0;background:var(--bg-2)}
+.faq-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:88px;align-items:start}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:first-child{border-top:1px solid var(--border)}
+.faq-q{
+  width:100%;text-align:left;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px 0;gap:20px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:17px;font-weight:700;letter-spacing:-.025em;
+  color:var(--t1);transition:color .2s;
+}
+.faq-q:hover{color:var(--accent)}
+.faq-ico{
+  width:28px;height:28px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--t2);transition:all .3s;
+}
+.faq-item.open .faq-ico{background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(45deg)}
+.faq-a{
+  font-size:15px;color:var(--t2);line-height:1.78;
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1),padding .4s;
+}
+.faq-item.open .faq-a{max-height:260px;padding-bottom:24px}
+
+/* ═══════════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════════ */
+#contact{padding:128px 0}
+.contact-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:88px;align-items:start}
+.c-links{display:flex;flex-direction:column;gap:14px;margin-top:40px}
+.c-link{
+  display:flex;align-items:center;gap:16px;
+  padding:20px 22px;border:1px solid var(--border);
+  border-radius:var(--radius);background:var(--surface);
+  transition:all .25s;color:inherit;
+}
+.c-link:hover{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.04);transform:translateX(5px)}
+.c-link-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.c-link-body{flex:1}
+.c-link-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+.c-link-val{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:700;letter-spacing:-.02em}
+.c-link-arr{color:var(--t3);font-size:12px;transition:all .2s}
+.c-link:hover .c-link-arr{transform:translate(2px,-2px);color:var(--t1)}
+.avail-box{
+  margin-top:24px;padding:22px 24px;
+  border:1px solid rgba(99,102,241,.2);border-radius:var(--radius);
+  background:rgba(99,102,241,.04);
+}
+.avail-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.avail-val{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.04em}
+.avail-sub{font-size:13px;color:var(--t2);margin-top:3px}
+
+.c-form{display:flex;flex-direction:column;gap:16px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-field{display:flex;flex-direction:column;gap:8px}
+.f-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.f-in{
+  padding:14px 18px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;color:var(--t1);
+  font-family:'Inter',sans-serif;font-size:15px;
+  transition:border-color .2s,background .2s;outline:none;
+}
+.f-in::placeholder{color:var(--t3)}
+.f-in:focus{border-color:var(--accent);background:rgba(99,102,241,.04)}
+select.f-in option{background:#0d0d1c}
+textarea.f-in{resize:none}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer{padding:56px 0 40px;border-top:1px solid var(--border)}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+.foot-logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.04em}
+.foot-logo-mark{width:30px;height:30px;background:var(--grad);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a{font-size:13.5px;color:var(--t3);transition:color .2s}
+.foot-links a:hover{color:var(--t1)}
+.foot-copy{font-size:12.5px;color:var(--t3)}
+
+/* ═══════════════════════════════════════════════
+   WA FAB
+═══════════════════════════════════════════════ */
+#wa-fab{
+  position:fixed;bottom:28px;right:28px;
+  width:54px;height:54px;background:#25d366;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:22px;z-index:80;
+  box-shadow:0 8px 28px rgba(37,211,102,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+#wa-fab:hover{transform:scale(1.1);box-shadow:0 14px 36px rgba(37,211,102,.55)}
+
+/* ═══════════════════════════════════════════════
+   BACK TO TOP
+═══════════════════════════════════════════════ */
+#btt{
+  position:fixed;bottom:96px;right:28px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(99,102,241,.8);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;cursor:pointer;
+  opacity:0;transition:opacity .3s,transform .2s;z-index:80;border:none;
+}
+#btt.show{opacity:1}
+#btt:hover{transform:translateY(-2px)}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:100px;right:28px;
+  background:var(--accent);color:#fff;
+  padding:12px 20px;border-radius:12px;
+  font-size:14px;font-weight:600;
+  display:none;align-items:center;gap:10px;z-index:200;
+  box-shadow:0 8px 28px rgba(99,102,241,.4);
+}
+
+/* ═══════════════════════════════════════════════
+   MOCK APPROVAL BANNER
+═══════════════════════════════════════════════ */
+.mock-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(99,102,241,.96);backdrop-filter:blur(12px);
+  text-align:center;padding:11px 20px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:700;color:#fff;
+  z-index:9996;letter-spacing:.02em;
+}
+.mock-bar a{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.18);border-radius:6px;
+  padding:2px 10px;margin-left:12px;font-size:12px;
+  transition:background .2s;color:#fff;
+}
+.mock-bar a:hover{background:rgba(255,255,255,.3)}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media(max-width:960px){
+  .nav-links{display:none}
+  .nav-burger{display:block}
+  .work-grid{grid-template-columns:1fr}
+  .stats-wrap{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .faq-wrap{grid-template-columns:1fr}
+  .contact-wrap{grid-template-columns:1fr}
+  .foot-inner{flex-direction:column;text-align:center}
+  .proc-step{grid-template-columns:60px 1fr}
+  .proc-icon{display:none}
+  .svc-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr}
+  .about-cards{grid-template-columns:1fr}
+  .f-row{grid-template-columns:1fr}
+  .hero-bottom{flex-direction:column;align-items:flex-start}
+  .hs-item{padding:0 24px 0 0}
+  .hs-div{margin-right:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- MOCK BANNER -->
+<div class="mock-bar">
+  ⚡ MOCK PREVIEW — Approve to replace the live site
+  <a href="index.html">← View current site</a>
+</div>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Cursor -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-wordmark" id="loader-wm">Makers Co</div>
+  <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+  <div class="loader-pct" id="loader-pct">Loading...</div>
+</div>
+
+<!-- WA FAB -->
+<a id="wa-fab" href="https://wa.me/60172996254?text=Hi%20Makers%20Co!%20I%27m%20interested%20in%20your%20services." target="_blank" title="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Back to top -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- Toast -->
+<div id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toast-msg">Copied!</span>
+</div>
+
+<!-- Mobile menu -->
+<div id="mob-menu">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#process" onclick="closeMenu()">Process</a>
+  <a href="#work" onclick="closeMenu()">Work</a>
+  <a href="#about" onclick="closeMenu()">About</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="builds.html" style="color:var(--accent)">Daily Builds ↗</a>
+  <a href="#contact" onclick="closeMenu()" class="btn-primary" style="font-size:17px;margin-top:8px">Start a project →</a>
+</div>
+
+<!-- ───────────────── NAV ───────────────── -->
+<nav id="nav">
+  <a href="#home" class="nav-logo">
+    <div class="nav-logo-mark"><i class="fas fa-wand-magic-sparkles"></i></div>
+    <span>Makers Co</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="builds.html" target="_blank">Daily Builds ↗</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta" id="nav-cta">Start a project →</a>
+  <button class="nav-burger" id="nav-burger" onclick="toggleMenu()">
+    <i class="fas fa-bars" id="burger-icon"></i>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section id="home">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-eyebrow" id="h-eyebrow">
+        <span class="hero-dot"></span>
+        Kuala Lumpur, Malaysia &nbsp;·&nbsp; Open for new projects
+      </div>
+
+      <h1 class="hero-title" id="h-title">
+        <span class="line"><span class="li">We Build</span></span>
+        <span class="line"><span class="li"><em class="g-text">Digital Solutions</em></span></span>
+        <span class="line"><span class="li">For Ambitious</span></span>
+        <span class="line"><span class="li">Businesses.</span></span>
+      </h1>
+
+      <div class="hero-bottom">
+        <p class="hero-copy" id="h-copy">
+          POS systems, mobile apps, inventory tools, school portals &amp; AI-powered fraud detection — we turn your ideas into production-ready software. <strong>Your demand, we build.</strong>
+        </p>
+        <div class="hero-actions" id="h-actions">
+          <a href="#contact" class="btn-primary mag">Start a project <i class="fas fa-arrow-right" style="font-size:13px"></i></a>
+          <a href="#work" class="btn-ghost">View our work</a>
+        </div>
+      </div>
+
+      <div class="hero-stats-bar" id="h-stats">
+        <div class="hs-item">
+          <span class="hs-num">5+</span>
+          <span class="hs-label">Years Experience</span>
+        </div>
+        <div class="hs-div"></div>
+        <div class="hs-item">
+          <span class="hs-num">50+</span>
+          <span class="hs-label">Projects Delivered</span>
+        </div>
+        <div class="hs-div"></div>
+        <div class="hs-item">
+          <span class="hs-num">100%</span>
+          <span class="hs-label">Satisfaction Guarantee</span>
+        </div>
+        <div class="hs-div"></div>
+        <div class="hs-item">
+          <span class="hs-num">24h</span>
+          <span class="hs-label">Response Time</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TICKER STRIP -->
+<div class="ticker">
+  <div class="ticker-track">
+    <!-- set 1 -->
+    <span class="ticker-item">POS Systems <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mobile Apps <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Inventory Management <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">F&amp;B Solutions <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">School Portals <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">AI &amp; Fraud Detection <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Digital Business Cards <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Ecommerce Tools <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Custom Solutions <span class="ticker-sep">✦</span></span>
+    <!-- set 2 (duplicate) -->
+    <span class="ticker-item">POS Systems <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mobile Apps <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Inventory Management <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">F&amp;B Solutions <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">School Portals <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">AI &amp; Fraud Detection <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Digital Business Cards <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Ecommerce Tools <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Custom Solutions <span class="ticker-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SERVICES
+═══════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div class="svc-header">
+      <div>
+        <div class="sec-tag">What We Build</div>
+        <h2 class="sec-head reveal">Six <em class="g-text">disciplines.</em><br/>One team.</h2>
+      </div>
+      <p class="sec-sub reveal">From cloud-synced POS to AI facial recognition — we engineer complete digital products tailored to your exact business needs.</p>
+    </div>
+
+    <div class="svc-grid">
+
+      <div class="svc-card reveal-up" onclick="location.href='#contact'">
+        <div class="svc-num">01</div>
+        <div class="svc-icon"><i class="fas fa-cash-register" style="color:#6366f1"></i></div>
+        <div class="svc-name">POS System</div>
+        <div class="svc-desc">Cloud-synced point-of-sale built for retail, F&amp;B and service businesses. Runs on any device. Works offline.</div>
+        <div class="svc-pills">
+          <span class="pill">Real-time analytics</span>
+          <span class="pill">Multi-payment</span>
+          <span class="pill">Branch sync</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+      <div class="svc-card reveal-up" style="transition-delay:.08s" onclick="location.href='#contact'">
+        <div class="svc-num">02</div>
+        <div class="svc-icon"><i class="fas fa-boxes-stacked" style="color:#8b5cf6"></i></div>
+        <div class="svc-name">Inventory Management</div>
+        <div class="svc-desc">AI-powered stock tracking with barcode/QR scanning, low-stock alerts and multi-location warehouse support.</div>
+        <div class="svc-pills">
+          <span class="pill">AI detection</span>
+          <span class="pill">Auto-reorder</span>
+          <span class="pill">Supplier mgmt</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+      <div class="svc-card reveal-up" style="transition-delay:.16s" onclick="location.href='#contact'">
+        <div class="svc-num">03</div>
+        <div class="svc-icon"><i class="fas fa-utensils" style="color:#f97316"></i></div>
+        <div class="svc-name">F&amp;B Apps &amp; Websites</div>
+        <div class="svc-desc">Custom mobile apps and websites for restaurants, cafes and cloud kitchens — self-order QR, KDS, loyalty programs.</div>
+        <div class="svc-pills">
+          <span class="pill">QR ordering</span>
+          <span class="pill">Table booking</span>
+          <span class="pill">Loyalty rewards</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+      <div class="svc-card reveal-up" style="transition-delay:.24s" onclick="location.href='#contact'">
+        <div class="svc-num">04</div>
+        <div class="svc-icon"><i class="fas fa-graduation-cap" style="color:#3b82f6"></i></div>
+        <div class="svc-name">School Management Portal</div>
+        <div class="svc-desc">All-in-one portal covering students, teachers, parents &amp; admins with automated attendance, grades and fee tracking.</div>
+        <div class="svc-pills">
+          <span class="pill">QR attendance</span>
+          <span class="pill">Parent portal</span>
+          <span class="pill">Fee collection</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+      <div class="svc-card reveal-up" style="transition-delay:.32s" onclick="location.href='#contact'">
+        <div class="svc-num">05</div>
+        <div class="svc-icon"><i class="fas fa-face-viewfinder" style="color:#ef4444"></i></div>
+        <div class="svc-name">Fraud Facial Detection</div>
+        <div class="svc-desc">On-premise AI facial recognition for secure identity verification. No third-party data sharing. Integrates with CCTV.</div>
+        <div class="svc-pills">
+          <span class="pill">Liveness check</span>
+          <span class="pill">Blacklist mgmt</span>
+          <span class="pill">Audit log</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+      <div class="svc-card reveal-up" style="transition-delay:.4s" onclick="location.href='#contact'">
+        <div class="svc-num">06</div>
+        <div class="svc-icon"><i class="fas fa-wand-magic-sparkles" style="color:#10b981"></i></div>
+        <div class="svc-name">Custom Solutions</div>
+        <div class="svc-desc">Have a unique idea? We build it from scratch — from automation tools to full enterprise systems. Money-back guarantee.</div>
+        <div class="svc-pills">
+          <span class="pill">Full custom dev</span>
+          <span class="pill">API integrations</span>
+          <span class="pill">Automation</span>
+        </div>
+        <div class="svc-arrow"><i class="fas fa-arrow-up-right"></i></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     PROCESS
+═══════════════════════════════════════ -->
+<section id="process">
+  <div class="container">
+    <div class="proc-header">
+      <div class="sec-tag">How We Work</div>
+      <h2 class="sec-head reveal" style="margin-top:16px">From <em class="g-text">briefing</em><br/>to <em class="g-text">launch.</em></h2>
+    </div>
+    <div class="proc-steps">
+
+      <div class="proc-step reveal">
+        <div class="proc-n">01/04</div>
+        <div class="proc-body">
+          <div class="proc-title">Strategy</div>
+          <div class="proc-desc">We start with deep discovery — understanding your business, users, competitors and goals. We define the roadmap before a single line of code is written.</div>
+          <div class="svc-pills" style="margin-top:4px">
+            <span class="pill">Requirements</span>
+            <span class="pill">Competitor analysis</span>
+            <span class="pill">Technical scoping</span>
+            <span class="pill">Roadmap</span>
+          </div>
+        </div>
+        <div class="proc-icon"><i class="fas fa-lightbulb"></i></div>
+      </div>
+
+      <div class="proc-step reveal">
+        <div class="proc-n">02/04</div>
+        <div class="proc-body">
+          <div class="proc-title">Design</div>
+          <div class="proc-desc">Wireframes, UI mockups and a full design system — reviewed and approved by you before development begins. No surprises mid-build.</div>
+          <div class="svc-pills" style="margin-top:4px">
+            <span class="pill">Wireframing</span>
+            <span class="pill">UI/UX</span>
+            <span class="pill">Design system</span>
+            <span class="pill">Prototype review</span>
+          </div>
+        </div>
+        <div class="proc-icon"><i class="fas fa-pen-nib"></i></div>
+      </div>
+
+      <div class="proc-step reveal">
+        <div class="proc-n">03/04</div>
+        <div class="proc-body">
+          <div class="proc-title">Build</div>
+          <div class="proc-desc">Clean, scalable code using Flutter, Node.js, Python and cloud infrastructure. Regular demos keep you in the loop throughout development.</div>
+          <div class="svc-pills" style="margin-top:4px">
+            <span class="pill">Frontend + Backend</span>
+            <span class="pill">API integrations</span>
+            <span class="pill">QA testing</span>
+            <span class="pill">Performance</span>
+          </div>
+        </div>
+        <div class="proc-icon"><i class="fas fa-code"></i></div>
+      </div>
+
+      <div class="proc-step reveal">
+        <div class="proc-n">04/04</div>
+        <div class="proc-body">
+          <div class="proc-title">Launch &amp; Care</div>
+          <div class="proc-desc">We deploy, monitor and provide ongoing maintenance. You get full source code, documentation and 24/7 support included.</div>
+          <div class="svc-pills" style="margin-top:4px">
+            <span class="pill">Deployment</span>
+            <span class="pill">Analytics setup</span>
+            <span class="pill">24/7 support</span>
+            <span class="pill">Maintenance</span>
+          </div>
+        </div>
+        <div class="proc-icon"><i class="fas fa-rocket"></i></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     WORK / CATEGORIES
+═══════════════════════════════════════ -->
+<section id="work">
+  <div class="container">
+    <div class="work-header">
+      <div class="sec-tag">Our Output</div>
+      <h2 class="sec-head reveal" style="margin-top:16px">What we've <em class="g-text">built.</em></h2>
+      <p class="sec-sub reveal" style="margin-top:20px">Fresh builds, UI design concepts and digital business cards — shipped every single day.</p>
+    </div>
+    <div class="work-grid">
+
+      <a href="builds.html" class="work-card reveal-up">
+        <div class="work-card-glow" style="background:#6366f1"></div>
+        <div class="wc-num">Category 01</div>
+        <div class="wc-icon" style="background:rgba(99,102,241,.12)">
+          <i class="fas fa-th-large" style="color:#6366f1"></i>
+        </div>
+        <div class="wc-title">Daily Ecommerce<br/>Builds</div>
+        <div class="wc-desc">A fresh complete ecommerce tool shipped daily — analytics dashboards, automation bots, inventory trackers, customer portals and more.</div>
+        <div class="wc-link">Browse all builds <i class="fas fa-arrow-up-right" style="font-size:11px"></i></div>
+      </a>
+
+      <a href="designs.html" class="work-card reveal-up" style="transition-delay:.1s">
+        <div class="work-card-glow" style="background:#ec4899"></div>
+        <div class="wc-num">Category 02</div>
+        <div class="wc-icon" style="background:rgba(236,72,153,.12)">
+          <i class="fas fa-palette" style="color:#ec4899"></i>
+        </div>
+        <div class="wc-title">Daily Design<br/>Concepts</div>
+        <div class="wc-desc">Storefront, product pages, checkout flows, dashboards and campaign pages — curated UI ideas generated fresh every day.</div>
+        <div class="wc-link">Browse all designs <i class="fas fa-arrow-up-right" style="font-size:11px"></i></div>
+      </a>
+
+      <a href="cards.html" class="work-card reveal-up" style="transition-delay:.2s">
+        <div class="work-card-glow" style="background:#8b5cf6"></div>
+        <div class="wc-num">Category 03</div>
+        <div class="wc-icon" style="background:rgba(139,92,246,.12)">
+          <i class="fas fa-id-card" style="color:#8b5cf6"></i>
+        </div>
+        <div class="wc-title">Digital Business<br/>Cards</div>
+        <div class="wc-desc">Apple Wallet cards, QR-scannable profiles, vCard exports and unique branded URLs — tailored for every business type.</div>
+        <div class="wc-link">Browse all cards <i class="fas fa-arrow-up-right" style="font-size:11px"></i></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     STATS
+═══════════════════════════════════════ -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-wrap">
+      <div class="stats-lhs reveal">
+        <div class="sec-tag">The Numbers</div>
+        <h2 class="sec-head">Results you<br/>can <em class="g-text">measure.</em></h2>
+        <p class="sec-sub">Real outcomes from real projects. We track everything and share the results transparently.</p>
+        <a href="#contact" class="btn-primary mag" style="align-self:flex-start">Start your project →</a>
+      </div>
+      <div class="stats-grid reveal-up">
+        <div class="s-cell">
+          <div class="s-num" data-target="50" data-suffix="+">0+</div>
+          <div class="s-label">Projects successfully delivered to clients across Malaysia</div>
+        </div>
+        <div class="s-cell">
+          <div class="s-num" data-target="5" data-suffix="★" data-float="1">0★</div>
+          <div class="s-label">Average client satisfaction rating from every engagement</div>
+        </div>
+        <div class="s-cell">
+          <div class="s-num" data-target="24" data-suffix="h">0h</div>
+          <div class="s-label">Maximum guaranteed response time on all support requests</div>
+        </div>
+        <div class="s-cell">
+          <div class="s-num" data-target="100" data-suffix="%">0%</div>
+          <div class="s-label">Money-back satisfaction guarantee on every project</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     TECH MARQUEE
+═══════════════════════════════════════ -->
+<section id="tech">
+  <div class="container">
+    <div class="tech-eyebrow">Technologies we use</div>
+  </div>
+  <div class="marq-wrap">
+    <div class="marq-track">
+      <!-- set 1 -->
+      <div class="t-chip"><i class="fab fa-flutter" style="color:#02569B"></i>Flutter</div>
+      <div class="t-chip"><i class="fas fa-fire" style="color:#FFCA28"></i>Firebase</div>
+      <div class="t-chip"><i class="fab fa-node-js" style="color:#339933"></i>Node.js</div>
+      <div class="t-chip"><i class="fab fa-python" style="color:#3776AB"></i>Python</div>
+      <div class="t-chip"><i class="fab fa-aws" style="color:#FF9900"></i>AWS</div>
+      <div class="t-chip"><i class="fas fa-database" style="color:#336791"></i>PostgreSQL</div>
+      <div class="t-chip"><i class="fas fa-brain" style="color:#FF6F00"></i>TensorFlow</div>
+      <div class="t-chip"><i class="fab fa-react" style="color:#61DAFB"></i>React</div>
+      <div class="t-chip"><i class="fas fa-code" style="color:#0175C2"></i>Dart</div>
+      <div class="t-chip"><i class="fab fa-docker" style="color:#2496ED"></i>Docker</div>
+      <div class="t-chip"><i class="fas fa-cloud" style="color:#6366f1"></i>GCP</div>
+      <!-- set 2 (duplicate for loop) -->
+      <div class="t-chip"><i class="fab fa-flutter" style="color:#02569B"></i>Flutter</div>
+      <div class="t-chip"><i class="fas fa-fire" style="color:#FFCA28"></i>Firebase</div>
+      <div class="t-chip"><i class="fab fa-node-js" style="color:#339933"></i>Node.js</div>
+      <div class="t-chip"><i class="fab fa-python" style="color:#3776AB"></i>Python</div>
+      <div class="t-chip"><i class="fab fa-aws" style="color:#FF9900"></i>AWS</div>
+      <div class="t-chip"><i class="fas fa-database" style="color:#336791"></i>PostgreSQL</div>
+      <div class="t-chip"><i class="fas fa-brain" style="color:#FF6F00"></i>TensorFlow</div>
+      <div class="t-chip"><i class="fab fa-react" style="color:#61DAFB"></i>React</div>
+      <div class="t-chip"><i class="fas fa-code" style="color:#0175C2"></i>Dart</div>
+      <div class="t-chip"><i class="fab fa-docker" style="color:#2496ED"></i>Docker</div>
+      <div class="t-chip"><i class="fas fa-cloud" style="color:#6366f1"></i>GCP</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="reveal">
+        <div class="sec-tag">About Us</div>
+        <blockquote class="about-quote" style="margin-top:20px">
+          "Turning <em class="g-text">innovative ideas</em> into powerful digital solutions that <em class="g-text">transform businesses.</em>"
+        </blockquote>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:32px">
+          <div style="width:48px;height:48px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👨‍💻</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.02em">Makers Co Team</div>
+            <div style="font-size:13px;color:var(--t3)">Your Technology Partner · Kuala Lumpur, MY</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-body reveal">
+        <p>We are a passionate team of developers and technology enthusiasts dedicated to helping businesses thrive in the digital age. With deep expertise in Flutter, AI/ML and cloud infrastructure, we deliver software that actually moves the needle.</p>
+        <p>No handoffs between specialists. No miscommunication. You work directly with the people building your product — from first call to deployment.</p>
+        <div class="about-cards">
+          <div class="ab-card">
+            <div class="ab-icon" style="color:var(--accent)"><i class="fas fa-bolt"></i></div>
+            <div class="ab-title">Fast Delivery</div>
+            <div class="ab-sub">On-time, every project</div>
+          </div>
+          <div class="ab-card">
+            <div class="ab-icon" style="color:#22c55e"><i class="fas fa-shield-halved"></i></div>
+            <div class="ab-title">Money-Back Guarantee</div>
+            <div class="ab-sub">100% satisfaction promise</div>
+          </div>
+          <div class="ab-card">
+            <div class="ab-icon" style="color:#8b5cf6"><i class="fas fa-headset"></i></div>
+            <div class="ab-title">24/7 Support</div>
+            <div class="ab-sub">Always here for you</div>
+          </div>
+          <div class="ab-card">
+            <div class="ab-icon" style="color:#f59e0b"><i class="fas fa-star"></i></div>
+            <div class="ab-title">Top Quality</div>
+            <div class="ab-sub">Premium code standards</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     FAQ
+═══════════════════════════════════════ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-wrap">
+
+      <div class="reveal">
+        <div class="sec-tag">FAQs</div>
+        <h2 class="sec-head" style="margin-top:16px">Answers<br/><em class="g-text">up front.</em></h2>
+        <p class="sec-sub" style="margin-top:24px">Everything you need to know before starting your project.</p>
+        <br/><br/>
+        <a href="#contact" class="btn-ghost">Ask us anything →</a>
+      </div>
+
+      <div class="faq-list reveal">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            How much does a project cost?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">Pricing depends on complexity and scope. A standard app or website typically starts from RM 3,000. We provide a fixed quote after a discovery call — no hidden fees, no hourly billing surprises.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            How long does a project take?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">A standard project runs 4–8 weeks from briefing to launch. Complex enterprise systems may take 3–6 months. We provide a detailed timeline upfront and stick to it.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            What technologies do you use?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">Flutter &amp; Dart for mobile apps, React/Next.js for web frontends, Node.js &amp; Python for backends, Firebase &amp; PostgreSQL for databases, and AWS/GCP for cloud infrastructure.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            Do I get the source code?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">Yes — full source code and documentation are handed over upon project completion. You own everything. Optional maintenance plans are available if you'd prefer we keep it running.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            What is the satisfaction guarantee?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">If we don't deliver exactly what was agreed, you get a full refund — no questions asked. We stand behind our work 100%.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="openFaq(this)">
+            Can you work with my existing team?
+            <span class="faq-ico"><i class="fas fa-plus"></i></span>
+          </button>
+          <div class="faq-a">Absolutely. We integrate with your existing developers, designers and product managers. We work async or real-time — whatever fits your workflow best.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+
+    <div style="text-align:center;margin-bottom:72px" class="reveal">
+      <div class="sec-tag" style="display:inline-block">Get In Touch</div>
+      <h2 class="sec-head" style="margin-top:16px">Let's <em class="g-text">talk.</em></h2>
+      <p class="sec-sub" style="margin:20px auto 0;text-align:center">Tell us about your project — we reply within 24 hours.</p>
+    </div>
+
+    <div class="contact-wrap">
+
+      <div class="reveal">
+        <div class="c-links">
+          <a href="https://wa.me/60172996254" target="_blank" class="c-link">
+            <div class="c-link-icon" style="background:rgba(37,211,102,.1)"><i class="fab fa-whatsapp" style="color:#25d366;font-size:20px"></i></div>
+            <div class="c-link-body">
+              <div class="c-link-lbl">WhatsApp</div>
+              <div class="c-link-val">+60 17-299 6254</div>
+            </div>
+            <i class="fas fa-arrow-up-right c-link-arr"></i>
+          </a>
+
+          <a href="#" onclick="copyEmail(event)" class="c-link">
+            <div class="c-link-icon" style="background:rgba(99,102,241,.1)"><i class="fas fa-envelope" style="color:#6366f1;font-size:17px"></i></div>
+            <div class="c-link-body">
+              <div class="c-link-lbl">Email</div>
+              <div class="c-link-val">soonfookwg96@gmail.com</div>
+            </div>
+            <i class="fas fa-copy c-link-arr" id="email-icon"></i>
+          </a>
+
+          <div class="c-link" style="cursor:default">
+            <div class="c-link-icon" style="background:rgba(251,191,36,.1)"><i class="fas fa-location-dot" style="color:#f59e0b;font-size:17px"></i></div>
+            <div class="c-link-body">
+              <div class="c-link-lbl">Location</div>
+              <div class="c-link-val">Kuala Lumpur, Malaysia</div>
+            </div>
+            <span style="font-size:11px;font-weight:700;color:var(--accent)">Available</span>
+          </div>
+        </div>
+
+        <div class="avail-box">
+          <div class="avail-lbl">Current Availability</div>
+          <div class="avail-val">Open for new projects</div>
+          <div class="avail-sub">Typically onboard within 1–2 weeks of first contact</div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <form class="c-form" id="contact-form" onsubmit="sendWA(event)">
+          <div class="f-row">
+            <div class="f-field">
+              <label class="f-lbl">Your Name</label>
+              <input id="f-name" type="text" class="f-in" placeholder="John Doe" required />
+            </div>
+            <div class="f-field">
+              <label class="f-lbl">Email Address</label>
+              <input id="f-email" type="email" class="f-in" placeholder="john@example.com" required />
+            </div>
+          </div>
+          <div class="f-field">
+            <label class="f-lbl">Service Interested In</label>
+            <select id="f-service" class="f-in" required>
+              <option value="">Select a service...</option>
+              <option>POS System</option>
+              <option>Inventory Management System</option>
+              <option>F&amp;B App Development</option>
+              <option>School Management Portal</option>
+              <option>Fraud Facial Detection</option>
+              <option>Custom Solution</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="f-field">
+            <label class="f-lbl">Your Message</label>
+            <textarea id="f-msg" class="f-in" rows="5" placeholder="Tell us about your project, timeline and budget..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary mag" style="width:100%;justify-content:center;font-size:15.5px;padding:16px">
+            Send via WhatsApp &nbsp;<i class="fab fa-whatsapp"></i>
+          </button>
+          <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:6px">Opens WhatsApp with your message pre-filled &nbsp;·&nbsp; Reply within 24h</p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer style="padding-bottom:60px"><!-- extra bottom for mock-bar -->
+  <div class="container">
+    <div class="foot-inner">
+      <a href="#home" class="foot-logo">
+        <div class="foot-logo-mark"><i class="fas fa-wand-magic-sparkles" style="color:#fff;font-size:11px"></i></div>
+        <span>Makers Co</span>
+      </a>
+      <div class="foot-links">
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="builds.html">Daily Builds</a>
+        <a href="designs.html">Designs</a>
+        <a href="cards.html">Biz Cards</a>
+      </div>
+      <p class="foot-copy">© 2025 Makers Co &nbsp;·&nbsp; Kuala Lumpur, Malaysia</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════════════ -->
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ─── LOADER ─────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  const wm   = document.getElementById('loader-wm');
+  const fill = document.getElementById('loader-fill');
+  const pct  = document.getElementById('loader-pct');
+  const ldEl = document.getElementById('loader');
+
+  gsap.to(wm,  { opacity:1, y:0, duration:.55, ease:'power3.out', delay:.1 });
+  gsap.to(pct, { opacity:1,      duration:.4,  ease:'power2.out', delay:.3 });
+
+  setTimeout(() => { fill.style.width = '100%'; }, 120);
+
+  setTimeout(() => {
+    gsap.to(ldEl, {
+      opacity: 0, duration: .65, ease: 'power2.inOut',
+      onComplete() {
+        ldEl.style.display = 'none';
+        launchHero();
+      }
+    });
+  }, 1700);
+});
+
+/* ─── HERO ENTRANCE ──────────────────────────────────────────── */
+function launchHero() {
+  const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+  tl.to('#h-eyebrow',      { opacity:1, y:0, duration:.8 })
+    .to('.hero-title .li', { y:'0%', duration:1.1, stagger:.1 }, '-=.45')
+    .to('#h-copy',         { opacity:1, y:0, duration:.85 }, '-=.55')
+    .to('#h-actions',      { opacity:1, y:0, duration:.8  }, '-=.65')
+    .to('#h-stats',        { opacity:1, y:0, duration:.8  }, '-=.55');
+}
+
+/* ─── SCROLL REVEAL (IntersectionObserver) ───────────────────── */
+const ioOpts = { threshold: .1, rootMargin: '0px 0px -50px 0px' };
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, ioOpts);
+document.querySelectorAll('.reveal, .reveal-up').forEach(el => io.observe(el));
+
+/* ─── STAT COUNTERS ──────────────────────────────────────────── */
+document.querySelectorAll('[data-target]').forEach(el => {
+  const target  = parseFloat(el.dataset.target);
+  const suffix  = el.dataset.suffix || '';
+  const isFloat = !!el.dataset.float;
+  let fired = false;
+
+  const cio = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting && !fired) {
+      fired = true;
+      gsap.to({ v: 0 }, {
+        v: target, duration: 2.2, ease: 'power2.out',
+        onUpdate() {
+          const v = this.targets()[0].v;
+          el.textContent = (isFloat ? v.toFixed(1) : Math.floor(v)) + suffix;
+        }
+      });
+      cio.disconnect();
+    }
+  }, { threshold: .5 });
+  cio.observe(el);
+});
+
+/* ─── CUSTOM CURSOR ──────────────────────────────────────────── */
+const dot = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+});
+(function raf() {
+  rx += (mx - rx) * .13;
+  ry += (my - ry) * .13;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(raf);
+})();
+document.querySelectorAll('a,button,.svc-card,.work-card,.faq-q,.c-link,.proc-step').forEach(el => {
+  el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+});
+document.addEventListener('mouseleave', () => { dot.classList.add('hidden-cur'); ring.classList.add('hidden-cur'); });
+document.addEventListener('mouseenter', () => { dot.classList.remove('hidden-cur'); ring.classList.remove('hidden-cur'); });
+
+/* ─── MAGNETIC BUTTONS ───────────────────────────────────────── */
+document.querySelectorAll('.mag').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width  / 2) * .28;
+    const y = (e.clientY - r.top  - r.height / 2) * .28;
+    btn.style.transform = `translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transition = 'transform .55s cubic-bezier(.34,1.56,.64,1)';
+    btn.style.transform = '';
+    setTimeout(() => { btn.style.transition = ''; }, 600);
+  });
+});
+
+/* ─── NAV SCROLL ─────────────────────────────────────────────── */
+const navEl = document.getElementById('nav');
+const btt   = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+  const s = window.scrollY;
+  navEl.classList.toggle('scrolled', s > 50);
+  btt.classList.toggle('show', s > 500);
+  const pct = (s / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}, { passive: true });
+
+/* ─── MOBILE MENU ────────────────────────────────────────────── */
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  document.getElementById('mob-menu').classList.toggle('open', menuOpen);
+  document.getElementById('burger-icon').className = menuOpen ? 'fas fa-times' : 'fas fa-bars';
+  document.body.style.overflow = menuOpen ? 'hidden' : '';
+}
+function closeMenu() {
+  menuOpen = false;
+  document.getElementById('mob-menu').classList.remove('open');
+  document.getElementById('burger-icon').className = 'fas fa-bars';
+  document.body.style.overflow = '';
+}
+
+/* ─── FAQ ACCORDION ──────────────────────────────────────────── */
+function openFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+/* ─── CONTACT FORM ───────────────────────────────────────────── */
+function sendWA(e) {
+  e.preventDefault();
+  const n = document.getElementById('f-name').value.trim();
+  const m = document.getElementById('f-email').value.trim();
+  const s = document.getElementById('f-service').value;
+  const t = document.getElementById('f-msg').value.trim();
+  const body = `Hi Makers Co! 👋\n\n*Name:* ${n}\n*Email:* ${m}\n*Service:* ${s}\n\n*Message:*\n${t}`;
+  window.open(`https://wa.me/60172996254?text=${encodeURIComponent(body)}`, '_blank');
+  document.getElementById('contact-form').reset();
+  toast('Message ready — check WhatsApp! 🎉');
+}
+function copyEmail(e) {
+  e.preventDefault();
+  navigator.clipboard.writeText('soonfookwg96@gmail.com').then(() => {
+    document.getElementById('email-icon').className = 'fas fa-check c-link-arr';
+    toast('Email copied to clipboard!');
+    setTimeout(() => { document.getElementById('email-icon').className = 'fas fa-copy c-link-arr'; }, 2200);
+  });
+}
+
+/* ─── TOAST ──────────────────────────────────────────────────── */
+function toast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  el.style.display = 'flex';
+  clearTimeout(window._t);
+  window._t = setTimeout(() => { el.style.display = 'none'; }, 3200);
+}
+
+/* ─── SMOOTH ANCHOR SCROLL ───────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+      closeMenu();
+    }
+  });
+});
+
+/* ─── GSAP: parallax orbs on scroll ─────────────────────────── */
+gsap.to('.orb-a', { y: -80, ease:'none', scrollTrigger: { scrub:1.5, start:'top top', end:'bottom top' } });
+gsap.to('.orb-b', { y: -50, ease:'none', scrollTrigger: { scrub:2,   start:'top top', end:'bottom top' } });
+gsap.to('.orb-c', { y: -30, ease:'none', scrollTrigger: { scrub:2.5, start:'top top', end:'bottom top' } });
+</script>
+</body>
+</html>
