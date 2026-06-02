@@ -413,10 +413,6 @@ async function loadCards(){
     gsap.fromTo('.ct',{opacity:0,y:32},{opacity:1,y:0,duration:.65,stagger:.08,ease:'power3.out',
       onComplete(){document.querySelectorAll('.ct').forEach(c=>initTilt(c))}
     });
-    /* alternating float */
-    document.querySelectorAll('.ct').forEach((c,i)=>{
-      gsap.to(c,{y:i%2===0?'-=7':'+=7',duration:2.8+i*.15,ease:'sine.inOut',yoyo:true,repeat:-1,delay:i*.25});
-    });
   }catch(e){
     console.warn('cards:',e);
     document.getElementById('cards-loading').remove();

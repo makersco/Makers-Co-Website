@@ -353,10 +353,6 @@ function renderDesigns(type){
   gsap.fromTo('.dc',{opacity:0,y:30},{opacity:1,y:0,duration:.6,stagger:.07,ease:'power3.out',
     onComplete(){document.querySelectorAll('.dc').forEach(c=>initTilt(c))}
   });
-  /* subtle float stagger on visible cards */
-  document.querySelectorAll('.dc').forEach((c,i)=>{
-    if(i<6) gsap.to(c,{y:'-=5',duration:2.5+i*.3,ease:'sine.inOut',yoyo:true,repeat:-1,delay:i*.4});
-  });
 }
 
 function filterD(type){
