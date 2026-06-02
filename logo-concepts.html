@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Makers Co — 5 Logo Concepts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+/* ── tokens ── */
+:root{
+  --bg:    #0e0a08;
+  --bg2:   #150f0b;
+  --bg3:   #1c1410;
+  --p1:    #FFD3AC;
+  --p2:    #FFB5AB;
+  --p3:    #E39A7B;
+  --p4:    #DBB06B;
+  --t1:    #fdf5ee;
+  --t2:    #b8957a;
+  --t3:    #6e5444;
+  --grad:  linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);
+  --gtext: linear-gradient(135deg,#FFD3AC,#FFB5AB,#E39A7B);
+  --bdr:   rgba(255,211,172,0.10);
+  --bdr2:  rgba(255,211,172,0.20);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--t1);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+
+/* ── page layout ── */
+.page{max-width:1300px;margin:0 auto;padding:60px 32px 120px}
+
+/* ── header ── */
+.hd{text-align:center;margin-bottom:80px}
+.hd-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:20px;
+}
+.hd-eyebrow-line{width:36px;height:1px;background:var(--bdr2)}
+.hd-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(36px,5vw,60px);
+  font-weight:800;letter-spacing:-.04em;line-height:1.05;
+  margin-bottom:18px;
+}
+.hd-title span{
+  background:var(--gtext);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hd-sub{
+  font-size:16px;color:var(--t2);line-height:1.75;max-width:520px;margin:0 auto;
+}
+.hd-note{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:24px;padding:10px 20px;
+  border:1px solid var(--bdr2);border-radius:99px;
+  font-size:13px;color:var(--t3);
+  background:rgba(255,211,172,.03);
+}
+
+/* ── grid ── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:960px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.grid{grid-template-columns:1fr}}
+.card-5{grid-column:2;} /* center the 5th card */
+@media(max-width:960px){.card-5{grid-column:auto}}
+
+/* ── logo card ── */
+.logo-card{
+  border:1px solid var(--bdr);border-radius:24px;
+  background:var(--bg2);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.16,1,.3,1);
+  opacity:0;transform:translateY(40px);
+}
+.logo-card:hover{
+  border-color:var(--bdr2);
+  box-shadow:0 32px 64px rgba(0,0,0,.5),0 0 0 1px rgba(227,154,123,.12);
+  transform:translateY(-6px);
+}
+.logo-card.selected{
+  border-color:var(--p3);
+  box-shadow:0 0 0 3px rgba(227,154,123,.2),0 24px 56px rgba(0,0,0,.5);
+}
+
+/* ── mark stage ── */
+.mark-stage{
+  background:var(--bg3);
+  padding:52px 32px 40px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;
+  border-bottom:1px solid var(--bdr);
+  position:relative;overflow:hidden;
+}
+.mark-stage::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(227,154,123,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.mark-wrap{
+  width:88px;height:88px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--bdr2);border-radius:22px;
+  background:rgba(255,211,172,.04);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s;
+  position:relative;z-index:1;
+}
+.logo-card:hover .mark-wrap{
+  transform:scale(1.08);
+  background:rgba(255,211,172,.07);
+  border-color:rgba(227,154,123,.35);
+}
+.mark-wrap svg{display:block;transition:transform .4s}
+.logo-card:hover .mark-wrap svg{transform:scale(1.06)}
+
+/* ── wordmark ── */
+.wordmark{
+  display:flex;align-items:center;gap:12px;
+  position:relative;z-index:1;
+}
+.wm-icon{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.wm-icon svg{display:block}
+.wm-text{
+  display:flex;flex-direction:column;gap:1px;
+}
+.wm-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:18px;font-weight:800;letter-spacing:-.04em;color:var(--t1);
+  line-height:1;
+}
+.wm-tag{
+  font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--t3);
+}
+
+/* ── card body ── */
+.card-body{padding:28px 28px 24px;display:flex;flex-direction:column;gap:16px;flex:1}
+.concept-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.concept-num{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--t3);
+}
+.concept-badge{
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--p3);padding:3px 10px;
+  border:1px solid rgba(227,154,123,.25);border-radius:99px;
+  background:rgba(227,154,123,.07);
+}
+.concept-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:20px;font-weight:800;letter-spacing:-.03em;
+}
+.concept-desc{
+  font-size:13.5px;color:var(--t2);line-height:1.72;flex:1;
+}
+.concept-tags{display:flex;flex-wrap:wrap;gap:7px}
+.concept-tag{
+  font-size:11px;font-weight:500;color:var(--t3);
+  padding:4px 11px;border:1px solid var(--bdr);border-radius:99px;
+}
+
+/* ── select btn ── */
+.select-btn{
+  width:100%;padding:13px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:-.01em;
+  border:1px solid var(--bdr2);border-radius:14px;
+  background:transparent;color:var(--t2);
+  cursor:pointer;transition:all .25s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:4px;
+}
+.select-btn:hover{
+  background:var(--grad);border-color:transparent;color:#fff;
+  box-shadow:0 8px 24px rgba(227,154,123,.3);
+}
+.logo-card.selected .select-btn{
+  background:var(--grad);border-color:transparent;color:#fff;
+}
+.select-btn-icon{font-size:13px;transition:transform .2s}
+.select-btn:hover .select-btn-icon{transform:translateX(2px)}
+
+/* ── divider ── */
+.section-div{
+  display:flex;align-items:center;gap:20px;
+  margin:80px 0 48px;
+}
+.section-div-line{flex:1;height:1px;background:var(--bdr)}
+.section-div-label{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);
+  white-space:nowrap;
+}
+
+/* ── color palette reference ── */
+.palette{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.pal-chip{display:flex;align-items:center;gap:10px}
+.pal-dot{width:28px;height:28px;border-radius:8px}
+.pal-hex{font-size:12px;font-weight:600;color:var(--t3);letter-spacing:.04em}
+
+/* ── selected notice ── */
+#sel-notice{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(227,154,123,.96);backdrop-filter:blur(12px);
+  padding:14px 28px;border-radius:99px;
+  font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:10px;
+  opacity:0;pointer-events:none;transition:all .4s cubic-bezier(.16,1,.3,1);
+  white-space:nowrap;z-index:100;
+  box-shadow:0 16px 40px rgba(227,154,123,.35);
+}
+#sel-notice.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all}
+</style>
+</head>
+<body>
+
+<div id="sel-notice">
+  ✓ <span id="sel-text">Logo selected!</span>
+  &nbsp;·&nbsp;
+  <a href="#" onclick="clearSelection()" style="opacity:.7;text-decoration:underline;color:#fff;font-weight:500">Change</a>
+</div>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <div class="hd" id="hd">
+    <div class="hd-eyebrow">
+      <span class="hd-eyebrow-line"></span>
+      Logo Concepts · Makers Co
+      <span class="hd-eyebrow-line"></span>
+    </div>
+    <h1 class="hd-title">Choose your <span>brand mark.</span></h1>
+    <p class="hd-sub">Five distinct logo concepts crafted around your Fresh Peach identity. Each mark tells a different story — pick the one that feels like you.</p>
+    <div class="hd-note">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#E39A7B" stroke-width="1.5"/><path d="M7 4.5v3.5l2 1" stroke="#E39A7B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Click any logo to select · Tell me your choice and I'll apply it to the site
+    </div>
+  </div>
+
+  <!-- ── PALETTE REFERENCE ── -->
+  <div class="palette" id="palette">
+    <div class="pal-chip"><div class="pal-dot" style="background:#FFD3AC"></div><span class="pal-hex">#FFD3AC</span></div>
+    <div class="pal-chip"><div class="pal-dot" style="background:#FFB5AB"></div><span class="pal-hex">#FFB5AB</span></div>
+    <div class="pal-chip"><div class="pal-dot" style="background:#E39A7B"></div><span class="pal-hex">#E39A7B</span></div>
+    <div class="pal-chip"><div class="pal-dot" style="background:#DBB06B"></div><span class="pal-hex">#DBB06B</span></div>
+  </div>
+
+  <div class="section-div"><div class="section-div-line"></div><div class="section-div-label">Five Concepts</div><div class="section-div-line"></div></div>
+
+  <!-- ══════════════════════════════════
+       LOGO GRID
+  ══════════════════════════════════ -->
+  <div class="grid" id="logo-grid">
+
+    <!-- ──────────────────────────────
+         01 — FACET (Isometric Cube)
+    ────────────────────────────────── -->
+    <div class="logo-card" id="card-1" onclick="selectLogo(1,'Facet — The Builder Cube')">
+      <div class="mark-stage">
+
+        <!-- MARK: large standalone -->
+        <div class="mark-wrap" style="width:100px;height:100px;border-radius:24px">
+          <svg viewBox="0 0 56 56" width="60" height="60" fill="none">
+            <!-- Top face -->
+            <polygon points="28,5 48,16 28,27 8,16" fill="#FFD3AC"/>
+            <!-- Right face -->
+            <polygon points="48,16 48,38 28,49 28,27" fill="#E39A7B"/>
+            <!-- Left face -->
+            <polygon points="8,16 8,38 28,49 28,27" fill="#DBB06B"/>
+          </svg>
+        </div>
+
+        <!-- WORDMARK -->
+        <div class="wordmark">
+          <div class="wm-icon">
+            <svg viewBox="0 0 56 56" width="20" height="20" fill="none">
+              <polygon points="28,5 48,16 28,27 8,16" fill="rgba(255,255,255,.9)"/>
+              <polygon points="48,16 48,38 28,49 28,27" fill="rgba(255,255,255,.55)"/>
+              <polygon points="8,16 8,38 28,49 28,27" fill="rgba(255,255,255,.7)"/>
+            </svg>
+          </div>
+          <div class="wm-text">
+            <span class="wm-name">Makers Co</span>
+            <span class="wm-tag">We Build · You Grow</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="concept-row">
+          <span class="concept-num">Concept 01</span>
+          <span class="concept-badge">Structural</span>
+        </div>
+        <div class="concept-name">Facet</div>
+        <p class="concept-desc">An isometric cube built from three distinct peach facets. Represents the act of building — solid, precise, three-dimensional. The three faces mirror your three core values: deliver, craft, scale.</p>
+        <div class="concept-tags">
+          <span class="concept-tag">Bold</span>
+          <span class="concept-tag">Geometric</span>
+          <span class="concept-tag">3-D depth</span>
+          <span class="concept-tag">Builder identity</span>
+        </div>
+        <button class="select-btn" id="btn-1">
+          Select this logo <span class="select-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         02 — SIGNAL (Arc Waves)
+    ────────────────────────────────── -->
+    <div class="logo-card" id="card-2" onclick="selectLogo(2,'Signal — The Growth Arc')">
+      <div class="mark-stage">
+
+        <div class="mark-wrap" style="width:100px;height:100px;border-radius:24px">
+          <svg viewBox="0 0 56 56" width="60" height="60" fill="none">
+            <!-- Center dot -->
+            <circle cx="9" cy="47" r="4" fill="#DBB06B"/>
+            <!-- Arc 1 — smallest / lightest -->
+            <path d="M9,35 A12,12 0 0 1 21,47"
+              stroke="#FFD3AC" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+            <!-- Arc 2 — medium -->
+            <path d="M9,23 A24,24 0 0 1 33,47"
+              stroke="#FFB5AB" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+            <!-- Arc 3 — largest / richest -->
+            <path d="M9,11 A36,36 0 0 1 45,47"
+              stroke="#E39A7B" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="wordmark">
+          <div class="wm-icon" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,211,172,.2)">
+            <svg viewBox="0 0 56 56" width="20" height="20" fill="none">
+              <circle cx="9" cy="47" r="4" fill="#DBB06B"/>
+              <path d="M9,35 A12,12 0 0 1 21,47" stroke="#FFD3AC" stroke-width="4" stroke-linecap="round" fill="none"/>
+              <path d="M9,23 A24,24 0 0 1 33,47" stroke="#FFB5AB" stroke-width="4" stroke-linecap="round" fill="none"/>
+              <path d="M9,11 A36,36 0 0 1 45,47" stroke="#E39A7B" stroke-width="4" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="wm-text">
+            <span class="wm-name">Makers Co</span>
+            <span class="wm-tag">We Build · You Grow</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="concept-row">
+          <span class="concept-num">Concept 02</span>
+          <span class="concept-badge">Dynamic</span>
+        </div>
+        <div class="concept-name">Signal</div>
+        <p class="concept-desc">Three expanding arcs radiate from a single origin point. Speaks to reach, growth, and signal strength — each arc a layer of capability expanding outward. Modern, techy, and unmistakably forward-moving.</p>
+        <div class="concept-tags">
+          <span class="concept-tag">Techy</span>
+          <span class="concept-tag">Expanding</span>
+          <span class="concept-tag">Stroke-based</span>
+          <span class="concept-tag">Modern</span>
+        </div>
+        <button class="select-btn" id="btn-2">
+          Select this logo <span class="select-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         03 — PRISM (Gem Diamond)
+    ────────────────────────────────── -->
+    <div class="logo-card" id="card-3" onclick="selectLogo(3,'Prism — The Precision Gem')">
+      <div class="mark-stage">
+
+        <div class="mark-wrap" style="width:100px;height:100px;border-radius:24px">
+          <svg viewBox="0 0 56 58" width="58" height="58" fill="none">
+            <!-- Crown: top two triangles -->
+            <polygon points="28,5 46,22 28,22" fill="#FFD3AC"/>
+            <polygon points="28,5 10,22 28,22" fill="#FFB5AB"/>
+            <!-- Crown center line -->
+            <line x1="28" y1="5" x2="28" y2="22" stroke="rgba(14,10,8,.4)" stroke-width="1"/>
+            <!-- Pavilion: bottom triangle split into facets -->
+            <polygon points="10,22 28,22 18,53" fill="#E39A7B"/>
+            <polygon points="28,22 46,22 38,53" fill="#DBB06B"/>
+            <polygon points="18,53 28,22 38,53" fill="#FFD3AC" opacity=".75"/>
+            <!-- Bottom tip -->
+            <polygon points="18,53 38,53 28,58" fill="#E39A7B" opacity=".6"/>
+            <!-- Horizontal belt line -->
+            <line x1="10" y1="22" x2="46" y2="22" stroke="rgba(14,10,8,.3)" stroke-width="1"/>
+          </svg>
+        </div>
+
+        <div class="wordmark">
+          <div class="wm-icon">
+            <svg viewBox="0 0 56 58" width="20" height="20" fill="none">
+              <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/>
+              <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/>
+              <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
+              <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
+              <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
+              <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/>
+            </svg>
+          </div>
+          <div class="wm-text">
+            <span class="wm-name">Makers Co</span>
+            <span class="wm-tag">We Build · You Grow</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="concept-row">
+          <span class="concept-num">Concept 03</span>
+          <span class="concept-badge">Premium</span>
+        </div>
+        <div class="concept-name">Prism</div>
+        <p class="concept-desc">A multi-faceted gem cut into distinct peach segments. Communicates precision, quality, and multi-dimensional expertise. The gem is a classic mark of premium — cut to perfection, just like your software.</p>
+        <div class="concept-tags">
+          <span class="concept-tag">Luxury feel</span>
+          <span class="concept-tag">Multi-facet</span>
+          <span class="concept-tag">Precision</span>
+          <span class="concept-tag">Timeless</span>
+        </div>
+        <button class="select-btn" id="btn-3">
+          Select this logo <span class="select-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         04 — ORBIT (Ellipse Rings)
+    ────────────────────────────────── -->
+    <div class="logo-card" id="card-4" onclick="selectLogo(4,'Orbit — The Precision Rings')">
+      <div class="mark-stage">
+
+        <div class="mark-wrap" style="width:100px;height:100px;border-radius:24px">
+          <svg viewBox="0 0 60 60" width="64" height="64" fill="none">
+            <!-- Central orb -->
+            <circle cx="30" cy="30" r="6" fill="#E39A7B"/>
+            <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+            <!-- Ring 1 — tilted -30° -->
+            <ellipse cx="30" cy="30" rx="20" ry="7.5"
+              stroke="#FFD3AC" stroke-width="2.2" fill="none"
+              transform="rotate(-30 30 30)"/>
+            <!-- Ring 2 — tilted +50° -->
+            <ellipse cx="30" cy="30" rx="20" ry="7.5"
+              stroke="#FFB5AB" stroke-width="2.2" fill="none"
+              transform="rotate(50 30 30)"/>
+            <!-- Ring 3 — tilted +130° -->
+            <ellipse cx="30" cy="30" rx="20" ry="7.5"
+              stroke="#DBB06B" stroke-width="2.2" fill="none"
+              transform="rotate(130 30 30)"/>
+          </svg>
+        </div>
+
+        <div class="wordmark">
+          <div class="wm-icon">
+            <svg viewBox="0 0 60 60" width="20" height="20" fill="none">
+              <circle cx="30" cy="30" r="6" fill="rgba(255,255,255,.8)"/>
+              <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.85)" stroke-width="2.5" fill="none" transform="rotate(-30 30 30)"/>
+              <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.55)" stroke-width="2.5" fill="none" transform="rotate(50 30 30)"/>
+              <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.4)"  stroke-width="2.5" fill="none" transform="rotate(130 30 30)"/>
+            </svg>
+          </div>
+          <div class="wm-text">
+            <span class="wm-name">Makers Co</span>
+            <span class="wm-tag">We Build · You Grow</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="concept-row">
+          <span class="concept-num">Concept 04</span>
+          <span class="concept-badge">Scientific</span>
+        </div>
+        <div class="concept-name">Orbit</div>
+        <p class="concept-desc">Three orbital rings intersecting around a glowing core. Inspired by atomic structure and precision engineering — everything revolves around your business at the centre. Suggests technology, intelligence, and control.</p>
+        <div class="concept-tags">
+          <span class="concept-tag">High-tech</span>
+          <span class="concept-tag">Orbital depth</span>
+          <span class="concept-tag">Distinctive</span>
+          <span class="concept-tag">Scientific</span>
+        </div>
+        <button class="select-btn" id="btn-4">
+          Select this logo <span class="select-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         05 — COMPASS (4-Point Star)
+    ────────────────────────────────── -->
+    <div class="logo-card card-5" id="card-5" onclick="selectLogo(5,'Compass — The Precision Star')">
+      <div class="mark-stage">
+
+        <div class="mark-wrap" style="width:100px;height:100px;border-radius:24px">
+          <svg viewBox="0 0 56 56" width="64" height="64" fill="none">
+            <!-- N point — coral -->
+            <polygon points="28,3 32.5,25.5 28,29.5 23.5,25.5" fill="#FFB5AB"/>
+            <!-- E point — terracotta -->
+            <polygon points="53,28 30.5,32.5 26.5,28 30.5,23.5" fill="#E39A7B"/>
+            <!-- S point — light peach -->
+            <polygon points="28,53 23.5,30.5 28,26.5 32.5,30.5" fill="#FFD3AC"/>
+            <!-- W point — gold -->
+            <polygon points="3,28 25.5,23.5 29.5,28 25.5,32.5" fill="#DBB06B"/>
+            <!-- Centre glow -->
+            <circle cx="28" cy="28" r="5.5" fill="#FFB5AB" opacity=".95"/>
+            <circle cx="28" cy="28" r="2.5" fill="#FFD3AC"/>
+          </svg>
+        </div>
+
+        <div class="wordmark">
+          <div class="wm-icon">
+            <svg viewBox="0 0 56 56" width="20" height="20" fill="none">
+              <polygon points="28,3 32.5,25.5 28,29.5 23.5,25.5" fill="rgba(255,255,255,.95)"/>
+              <polygon points="53,28 30.5,32.5 26.5,28 30.5,23.5" fill="rgba(255,255,255,.65)"/>
+              <polygon points="28,53 23.5,30.5 28,26.5 32.5,30.5" fill="rgba(255,255,255,.8)"/>
+              <polygon points="3,28 25.5,23.5 29.5,28 25.5,32.5" fill="rgba(255,255,255,.5)"/>
+              <circle cx="28" cy="28" r="5" fill="rgba(255,255,255,.9)"/>
+            </svg>
+          </div>
+          <div class="wm-text">
+            <span class="wm-name">Makers Co</span>
+            <span class="wm-tag">We Build · You Grow</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="concept-row">
+          <span class="concept-num">Concept 05</span>
+          <span class="concept-badge">Iconic</span>
+        </div>
+        <div class="concept-name">Compass</div>
+        <p class="concept-desc">Four elongated diamond points in four distinct peach tones — a precision compass star. Each direction represents a pillar of your service: build, design, deliver, support. Central glow symbolises the idea that sparked it all.</p>
+        <div class="concept-tags">
+          <span class="concept-tag">Iconic</span>
+          <span class="concept-tag">Directional</span>
+          <span class="concept-tag">4-pillar identity</span>
+          <span class="concept-tag">Memorable</span>
+        </div>
+        <button class="select-btn" id="btn-5">
+          Select this logo <span class="select-btn-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- ── BOTTOM NOTE ── -->
+  <div style="text-align:center;margin-top:72px;opacity:0" id="bottom-note">
+    <p style="font-size:13.5px;color:var(--t3);line-height:1.8">
+      Once you select a concept, I'll apply the chosen logo mark across<br/>
+      <code style="color:var(--p3);font-size:12px;background:rgba(227,154,123,.08);padding:2px 8px;border-radius:4px">mock-index.html</code>,
+      <code style="color:var(--p3);font-size:12px;background:rgba(227,154,123,.08);padding:2px 8px;border-radius:4px">builds.html</code>,
+      <code style="color:var(--p3);font-size:12px;background:rgba(227,154,123,.08);padding:2px 8px;border-radius:4px">designs.html</code> and
+      <code style="color:var(--p3);font-size:12px;background:rgba(227,154,123,.08);padding:2px 8px;border-radius:4px">cards.html</code>
+    </p>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── entrance animations ── */
+gsap.to('#hd', { opacity:1, y:0, duration:.9, ease:'power3.out', delay:.2,
+  onStart(){ document.getElementById('hd').style.opacity=0; document.getElementById('hd').style.transform='translateY(32px)'; }
+});
+gsap.to('#palette', { opacity:1, y:0, duration:.8, ease:'power3.out', delay:.4,
+  onStart(){ document.getElementById('palette').style.opacity=0; document.getElementById('palette').style.transform='translateY(24px)'; }
+});
+
+/* cards stagger in */
+gsap.to('.logo-card', {
+  opacity: 1, y: 0,
+  duration: .9, ease: 'power3.out',
+  stagger: .12, delay: .55
+});
+gsap.to('#bottom-note', { opacity:1, duration:.8, delay:1.4, ease:'power2.out' });
+
+/* ── selection logic ── */
+let current = null;
+
+function selectLogo(n, name) {
+  /* deselect all */
+  document.querySelectorAll('.logo-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.select-btn').forEach(b => {
+    b.innerHTML = 'Select this logo <span class="select-btn-icon">→</span>';
+  });
+
+  if (current === n) {
+    clearSelection();
+    return;
+  }
+
+  current = n;
+  const card = document.getElementById('card-' + n);
+  const btn  = document.getElementById('btn-' + n);
+
+  card.classList.add('selected');
+  btn.innerHTML = '✓ Selected <span class="select-btn-icon"></span>';
+
+  /* pulse animation */
+  gsap.fromTo(card,
+    { boxShadow: '0 0 0 4px rgba(227,154,123,.6)' },
+    { boxShadow: '0 0 0 3px rgba(227,154,123,.2),0 24px 56px rgba(0,0,0,.5)', duration: .6, ease:'power2.out' }
+  );
+
+  /* show notice */
+  document.getElementById('sel-text').textContent = name + ' selected!';
+  document.getElementById('sel-notice').classList.add('show');
+
+  /* scroll card into view smoothly */
+  card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function clearSelection() {
+  current = null;
+  document.querySelectorAll('.logo-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.select-btn').forEach(b => {
+    b.innerHTML = 'Select this logo <span class="select-btn-icon">→</span>';
+  });
+  document.getElementById('sel-notice').classList.remove('show');
+}
+
+/* ── cursor glow on card hover ── */
+document.querySelectorAll('.logo-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
+    const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+    card.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,211,172,.06) 0%, #150f0b 60%)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.background = '';
+  });
+});
+</script>
+</body>
+</html>
