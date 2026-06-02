@@ -36,6 +36,9 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); }
+    .nav-logo-mark{transition:transform .3s}
+    .prism-animate{animation:prism-spin 10s linear infinite}
+    @keyframes prism-spin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
 
     .glass {
       background: rgba(255,255,255,0.04);
@@ -128,10 +131,7 @@
   style="background: rgba(10,10,15,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06);">
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="index.html#home" class="flex items-center gap-2 text-white font-bold text-xl">
-      <span class="gradient-bg w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm">
-        <i class="fas fa-wand-magic-sparkles"></i>
-      </span>
-      <span>Makers Co</span>
+    <div class="nav-logo-mark prism-animate" style="width:34px;height:34px;background:linear-gradient(135deg,#FFB5AB 0%,#E39A7B 52%,#DBB06B 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transform-style:preserve-3d"><svg viewBox="0 0 56 58" width="20" height="20" fill="none"><polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/><polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/><polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/><polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/><polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/><polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/></svg></div>      <span>Makers Co</span>
     </a>
 
     <ul class="desktop-nav hidden md:flex items-center gap-8">

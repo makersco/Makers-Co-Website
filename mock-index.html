@@ -159,6 +159,8 @@ img{max-width:100%;display:block}
   transition:transform .3s;
 }
 .nav-logo:hover .nav-logo-mark{transform:rotate(-8deg) scale(1.08)}
+.prism-animate{animation:prism-spin 10s linear infinite}
+@keyframes prism-spin{0%{transform:rotateY(0deg) rotateX(0deg)}100%{transform:rotateY(360deg) rotateX(8deg)}}
 .nav-links{
   display:flex;align-items:center;gap:36px;list-style:none;
 }
@@ -804,7 +806,18 @@ footer{padding:56px 0 40px;border-top:1px solid var(--border)}
 <!-- ───────────────── NAV ───────────────── -->
 <nav id="nav">
   <a href="#home" class="nav-logo">
-    <div class="nav-logo-mark"><i class="fas fa-wand-magic-sparkles"></i></div>
+    <div class="nav-logo-mark prism-animate">
+      <svg viewBox="0 0 56 58" width="24" height="24" fill="none" style="perspective:1200px">
+        <g style="transform-origin:center;will-change:transform">
+          <polygon points="28,5 46,22 28,22" fill="#FFD3AC"/>
+          <polygon points="28,5 10,22 28,22" fill="#FFB5AB"/>
+          <polygon points="10,22 28,22 18,53" fill="#E39A7B"/>
+          <polygon points="28,22 46,22 38,53" fill="#DBB06B"/>
+          <polygon points="18,53 28,22 38,53" fill="#FFD3AC" opacity=".75"/>
+          <polygon points="18,53 38,53 28,58" fill="#E39A7B" opacity=".6"/>
+        </g>
+      </svg>
+    </div>
     <span>Makers Co</span>
   </a>
   <ul class="nav-links">
