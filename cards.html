@@ -162,7 +162,23 @@ footer{border-top:1px solid var(--bdr);padding:52px 0 40px}
 
 @media(max-width:860px){.n-links{display:none}.n-burger{display:block}#cards-grid{grid-template-columns:1fr}.cta-banner{padding:32px;flex-direction:column}}
 @media(max-width:520px){.foot-row{flex-direction:column;text-align:center}.feat-pills{gap:7px}}
-</style>
+
+    /* ── Makers Co Orbit Logo animation ────────────────────────── */
+    .mkr-orbit .ring1{transform-origin:30px 30px;animation:mkr-spin1 8s linear infinite}
+    .mkr-orbit .ring2{transform-origin:30px 30px;animation:mkr-spin2 12s linear infinite reverse}
+    .mkr-orbit .ring3{transform-origin:30px 30px;animation:mkr-spin3 10s linear infinite}
+    .mkr-orbit .core-outer{transform-origin:30px 30px;animation:mkr-pulse 3s ease-in-out infinite}
+    @keyframes mkr-spin1{from{transform:rotate(-30deg)}to{transform:rotate(330deg)}}
+    @keyframes mkr-spin2{from{transform:rotate(50deg)}to{transform:rotate(410deg)}}
+    @keyframes mkr-spin3{from{transform:rotate(130deg)}to{transform:rotate(490deg)}}
+    @keyframes mkr-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:.75}}
+    @media(prefers-reduced-motion:reduce){
+      .mkr-orbit .ring1,.mkr-orbit .ring2,.mkr-orbit .ring3,.mkr-orbit .core-outer{animation:none}
+      .mkr-orbit .ring1{transform:rotate(-30deg)}
+      .mkr-orbit .ring2{transform:rotate(50deg)}
+      .mkr-orbit .ring3{transform:rotate(130deg)}
+    }
+    </style>
 </head>
 <body>
 <div id="pb"></div>
@@ -183,15 +199,14 @@ footer{border-top:1px solid var(--bdr);padding:52px 0 40px}
 
 <nav id="nav">
   <a href="index.html" class="n-logo">
-    <div class="n-mark prism-mark">
-      <svg viewBox="0 0 56 58" width="20" height="20" fill="none">
-        <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.95)"/>
-        <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.7)"/>
-        <polygon points="10,22 28,22 18,53" fill="rgba(255,255,255,.5)"/>
-        <polygon points="28,22 46,22 38,53" fill="rgba(255,255,255,.6)"/>
-        <polygon points="18,53 28,22 38,53" fill="rgba(255,255,255,.35)"/>
-        <polygon points="18,53 38,53 28,58" fill="rgba(255,255,255,.25)"/>
-      </svg>
+    <div class="n-mark">
+      <svg class="mkr-orbit" viewBox="0 0 60 60" width="24" height="24" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.8" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.8" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.8" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="7" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="4" fill="#FFD3AC"/>
+        </svg>
     </div>
     <span>Makers Co</span>
   </a>
@@ -272,7 +287,7 @@ footer{border-top:1px solid var(--bdr);padding:52px 0 40px}
   <div class="wrap">
     <div class="foot-row">
       <a href="index.html" class="foot-logo">
-        <div class="foot-mark prism-mark">
+        <div class="foot-mark">
           <svg viewBox="0 0 56 58" width="16" height="16" fill="none">
             <polygon points="28,5 46,22 28,22" fill="rgba(255,255,255,.9)"/>
             <polygon points="28,5 10,22 28,22" fill="rgba(255,255,255,.65)"/>

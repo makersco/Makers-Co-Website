@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Makers Co — Orbit Logo Export</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 24px}
+h1{font-size:28px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#FFD3AC,#E39A7B,#DBB06B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:14px;color:#64748b;margin-bottom:48px}
+.section{width:100%;max-width:800px;margin-bottom:48px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#475569;margin-bottom:16px}
+.logo-row{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+.logo-preview{display:flex;flex-direction:column;align-items:center;gap:8px}
+.logo-preview span{font-size:10px;color:#475569}
+.on-dark{background:#0a0a0f;border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,.07)}
+.on-light{background:#f8fafc;border-radius:12px;padding:20px;border:1px solid #e2e8f0}
+.wordmark{display:flex;align-items:center;gap:10px;padding:16px 24px;border-radius:12px}
+.wm-name{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.wm-dark .wm-name{color:#f8fafc}
+.wm-light .wm-name{color:#0f172a}
+.wm-tag{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.5;margin-top:1px}
+.export-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:8px}
+.export-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);cursor:pointer;transition:all .2s}
+.export-btn:hover{border-color:#E39A7B;background:rgba(227,154,123,.06)}
+.export-btn .label{font-size:13px;font-weight:600;color:#e2e8f0}
+.export-btn .desc{font-size:11px;color:#475569}
+.download-link{display:none}
+
+/* ── Orbit logo animation ───────────────────── */
+.mkr-orbit .ring1{transform-origin:30px 30px;animation:mkr-spin1 8s linear infinite}
+.mkr-orbit .ring2{transform-origin:30px 30px;animation:mkr-spin2 12s linear infinite reverse}
+.mkr-orbit .ring3{transform-origin:30px 30px;animation:mkr-spin3 10s linear infinite}
+.mkr-orbit .core-outer{transform-origin:30px 30px;animation:mkr-pulse 3s ease-in-out infinite}
+.mkr-orbit .dot1{transform-origin:30px 30px;animation:mkr-spin1 8s linear infinite}
+.mkr-orbit .dot2{transform-origin:30px 30px;animation:mkr-spin2 12s linear infinite reverse}
+.mkr-orbit .dot3{transform-origin:30px 30px;animation:mkr-spin3 10s linear infinite}
+@keyframes mkr-spin1{from{transform:rotate(-30deg)}to{transform:rotate(330deg)}}
+@keyframes mkr-spin2{from{transform:rotate(50deg)}to{transform:rotate(410deg)}}
+@keyframes mkr-spin3{from{transform:rotate(130deg)}to{transform:rotate(490deg)}}
+@keyframes mkr-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.15)}}
+
+@media(prefers-reduced-motion:reduce){
+  .mkr-orbit .ring1,.mkr-orbit .ring2,.mkr-orbit .ring3,
+  .mkr-orbit .dot1,.mkr-orbit .dot2,.mkr-orbit .dot3,
+  .mkr-orbit .core-outer{animation:none}
+}
+</style>
+</head>
+<body>
+
+<h1>Orbit Logo</h1>
+<p class="sub">Animated SVG · Export PNG at any size</p>
+
+<!-- LIVE PREVIEWS -->
+<div class="section">
+  <div class="section-title">Live previews — animated</div>
+  <div class="logo-row">
+
+    <div class="logo-preview">
+      <div class="on-dark">
+        <svg class="mkr-orbit" viewBox="0 0 60 60" width="64" height="64" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.2" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+          <!-- Satellite dots -->
+          <g class="dot1"><circle cx="50" cy="30" r="2.5" fill="#FFD3AC"/></g>
+          <g class="dot2"><circle cx="50" cy="30" r="2" fill="#FFB5AB"/></g>
+          <g class="dot3"><circle cx="50" cy="30" r="1.8" fill="#DBB06B"/></g>
+        </svg>
+      </div>
+      <span>64px · dark</span>
+    </div>
+
+    <div class="logo-preview">
+      <div class="on-dark">
+        <svg class="mkr-orbit" viewBox="0 0 60 60" width="128" height="128" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.2" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+          <g class="dot1"><circle cx="50" cy="30" r="2.5" fill="#FFD3AC"/></g>
+          <g class="dot2"><circle cx="50" cy="30" r="2" fill="#FFB5AB"/></g>
+          <g class="dot3"><circle cx="50" cy="30" r="1.8" fill="#DBB06B"/></g>
+        </svg>
+      </div>
+      <span>128px · dark</span>
+    </div>
+
+    <div class="logo-preview">
+      <div class="on-light">
+        <svg class="mkr-orbit" viewBox="0 0 60 60" width="64" height="64" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#E39A7B" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.2" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.2" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+          <g class="dot1"><circle cx="50" cy="30" r="2.5" fill="#E39A7B"/></g>
+          <g class="dot2"><circle cx="50" cy="30" r="2" fill="#FFB5AB"/></g>
+          <g class="dot3"><circle cx="50" cy="30" r="1.8" fill="#DBB06B"/></g>
+        </svg>
+      </div>
+      <span>64px · light</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- WORDMARK -->
+<div class="section">
+  <div class="section-title">Wordmark</div>
+  <div class="logo-row">
+    <div class="logo-preview">
+      <div class="wordmark on-dark wm-dark">
+        <svg class="mkr-orbit" viewBox="0 0 60 60" width="32" height="32" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.5" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.5" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.5" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+        </svg>
+        <div>
+          <div class="wm-name">Makers Co</div>
+          <div class="wm-tag" style="color:#E39A7B">We Build · You Grow</div>
+        </div>
+      </div>
+      <span>Navbar size · dark</span>
+    </div>
+    <div class="logo-preview">
+      <div class="wordmark on-light wm-light">
+        <svg class="mkr-orbit" viewBox="0 0 60 60" width="32" height="32" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#E39A7B" stroke-width="2.5" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.5" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.5" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+        </svg>
+        <div>
+          <div class="wm-name">Makers Co</div>
+          <div class="wm-tag" style="color:#E39A7B">We Build · You Grow</div>
+        </div>
+      </div>
+      <span>Navbar size · light</span>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT -->
+<div class="section">
+  <div class="section-title">Export PNG</div>
+  <div class="export-grid">
+    <div class="export-btn" onclick="exportPNG(256,'transparent')">
+      <span style="font-size:24px">🖼️</span>
+      <span class="label">256 × 256</span>
+      <span class="desc">Transparent background</span>
+    </div>
+    <div class="export-btn" onclick="exportPNG(512,'transparent')">
+      <span style="font-size:24px">🖼️</span>
+      <span class="label">512 × 512</span>
+      <span class="desc">Transparent background</span>
+    </div>
+    <div class="export-btn" onclick="exportPNG(256,'dark')">
+      <span style="font-size:24px">⬛</span>
+      <span class="label">256 × 256</span>
+      <span class="desc">Dark background</span>
+    </div>
+    <div class="export-btn" onclick="exportPNG(512,'dark')">
+      <span style="font-size:24px">⬛</span>
+      <span class="label">512 × 512</span>
+      <span class="desc">Dark background</span>
+    </div>
+    <div class="export-btn" onclick="exportPNG(256,'light')">
+      <span style="font-size:24px">⬜</span>
+      <span class="label">256 × 256</span>
+      <span class="desc">White background</span>
+    </div>
+    <div class="export-btn" onclick="exportSVG()">
+      <span style="font-size:24px">📐</span>
+      <span class="label">SVG file</span>
+      <span class="desc">Vector — infinitely scalable</span>
+    </div>
+  </div>
+  <canvas id="cvs" style="display:none"></canvas>
+  <a id="dl-link" class="download-link"></a>
+</div>
+
+<script>
+const SVG_STATIC = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.2" fill="none" transform="rotate(-30 30 30)"/>
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.2" fill="none" transform="rotate(50 30 30)"/>
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.2" fill="none" transform="rotate(130 30 30)"/>
+  <circle cx="30" cy="30" r="6" fill="#E39A7B"/>
+  <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+</svg>`;
+
+function exportPNG(size, bg) {
+  const cvs = document.getElementById('cvs');
+  cvs.width = size;
+  cvs.height = size;
+  const ctx = cvs.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+
+  if (bg === 'dark') {
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(0, 0, size, size);
+  } else if (bg === 'light') {
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, size, size);
+  }
+
+  const svgBlob = new Blob([SVG_STATIC], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = () => {
+    // Draw with padding
+    const pad = size * 0.1;
+    ctx.drawImage(img, pad, pad, size - pad*2, size - pad*2);
+    const a = document.getElementById('dl-link');
+    a.href = cvs.toDataURL('image/png');
+    a.download = `makers-co-orbit-${size}x${size}-${bg}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+}
+
+function exportSVG() {
+  const blob = new Blob([SVG_STATIC], {type:'image/svg+xml'});
+  const a = document.getElementById('dl-link');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'makers-co-orbit.svg';
+  a.click();
+}
+</script>
+</body>
+</html>
