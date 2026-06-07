@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Makers Co — Instagram DP 320×320</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Space Grotesk',sans-serif;background:#080808;color:#e2e8f0;min-height:100vh;padding:40px 20px;display:flex;flex-direction:column;align-items:center}
+h1{font-size:22px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,#FFD3AC,#E39A7B,#DBB06B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center}
+.sub{font-size:13px;color:#475569;margin-bottom:10px;text-align:center}
+.note{font-size:11px;color:#334155;margin-bottom:36px;text-align:center;max-width:480px;line-height:1.6;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:10px 16px;border-radius:8px}
+.note strong{color:#E39A7B}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:24px;width:100%;max-width:900px}
+.card{display:flex;flex-direction:column;align-items:center;gap:12px}
+.canvas-wrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.canvas-wrap canvas{display:block}
+.card-name{font-size:12px;font-weight:700;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.dl-btn{width:100%;padding:10px;border-radius:10px;background:rgba(255,211,172,.08);border:1px solid rgba(255,211,172,.2);color:#FFD3AC;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em}
+.dl-btn:hover{background:rgba(255,211,172,.16);border-color:rgba(255,211,172,.4)}
+.dl-btn:active{transform:scale(.97)}
+.progress{display:none;font-size:11px;color:#64748b;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>Orbit Logo — Instagram DP</h1>
+<p class="sub">320 × 320 px · HD static PNG</p>
+<div class="note">
+  <strong>Instagram DPs are static</strong> — animated GIFs are not supported.<br>
+  These 5 designs are rendered at 320×320 px, ready to upload directly.
+</div>
+
+<div class="grid" id="grid"></div>
+<a id="dl" style="display:none"></a>
+
+<script>
+const SIZE = 320;
+const CX = SIZE / 2;
+const CY = SIZE / 2;
+
+// ── Orbit geometry ──────────────────────────────────────────────────────
+// Ring tilts (degrees) — snapshot of the animation at t=0
+const TILTS = [-30, 50, 130];
+const RX = SIZE * 0.30; // ellipse X radius
+const RY = SIZE * 0.11; // ellipse Y radius
+
+function toRad(deg){ return deg * Math.PI / 180; }
+
+// Draw one ellipse ring at a given rotation (tilt)
+function drawRing(ctx, tilt, color, lineWidth, glow = 0) {
+  ctx.save();
+  ctx.translate(CX, CY);
+  ctx.rotate(toRad(tilt));
+  if (glow > 0) {
+    ctx.shadowColor = color;
+    ctx.shadowBlur = glow;
+  }
+  ctx.beginPath();
+  ctx.ellipse(0, 0, RX, RY, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Draw satellite dot on a ring
+function drawDot(ctx, tilt, offsetAngle, color, radius) {
+  ctx.save();
+  ctx.translate(CX, CY);
+  ctx.rotate(toRad(tilt));
+  const x = RX * Math.cos(toRad(offsetAngle));
+  const y = RY * Math.sin(toRad(offsetAngle));
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+// Draw core orb
+function drawCore(ctx, innerColor, outerColor, r = 22, glowColor = null, glowSize = 0) {
+  if (glowColor) {
+    ctx.save();
+    ctx.shadowColor = glowColor;
+    ctx.shadowBlur = glowSize;
+    ctx.beginPath();
+    ctx.arc(CX, CY, r, 0, Math.PI * 2);
+    ctx.fillStyle = outerColor;
+    ctx.fill();
+    ctx.restore();
+  }
+  // Outer
+  const grad = ctx.createRadialGradient(CX - r*0.25, CY - r*0.25, r*0.1, CX, CY, r);
+  grad.addColorStop(0, innerColor);
+  grad.addColorStop(1, outerColor);
+  ctx.beginPath();
+  ctx.arc(CX, CY, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  // Specular highlight
+  ctx.beginPath();
+  ctx.arc(CX - r*0.3, CY - r*0.3, r * 0.25, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fill();
+}
+
+// Draw text label
+function drawLabel(ctx, text, y, font, color, shadow = null) {
+  ctx.save();
+  ctx.font = font;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  if (shadow) { ctx.shadowColor = shadow; ctx.shadowBlur = 12; }
+  ctx.fillStyle = color;
+  ctx.fillText(text, CX, y);
+  ctx.restore();
+}
+
+// ── DESIGN DEFINITIONS ──────────────────────────────────────────────────
+const DESIGNS = [
+
+  // 1. Dark Gold Luxury
+  {
+    name: 'Dark Gold Luxury',
+    draw(ctx) {
+      // Background — warm black with radial glow
+      const bg = ctx.createRadialGradient(CX, CY*0.7, 20, CX, CY, SIZE*0.75);
+      bg.addColorStop(0, '#1f1408');
+      bg.addColorStop(0.5, '#110c05');
+      bg.addColorStop(1, '#080501');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Subtle warm glow behind orbit
+      const glow = ctx.createRadialGradient(CX, CY, 0, CX, CY, RX * 1.2);
+      glow.addColorStop(0, 'rgba(201,169,98,0.12)');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Rings
+      drawRing(ctx, -30,  '#C9A96E', 2.8, 10);
+      drawRing(ctx,  50,  '#E2C99A', 2.8, 8);
+      drawRing(ctx, 130,  '#A07840', 2.8, 6);
+
+      // Dots
+      drawDot(ctx, -30,  -20, '#C9A96E', 4.5);
+      drawDot(ctx,   50,  80, '#E2C99A', 3.5);
+      drawDot(ctx, 130, 200, '#A07840', 3);
+
+      // Core
+      drawCore(ctx, '#FFD3AC', '#C9A96E', 20, '#C9A96E', 30);
+
+      // "MC" monogram
+      ctx.save();
+      ctx.font = '700 14px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(201,169,98,0.9)';
+      ctx.shadowColor = '#C9A96E';
+      ctx.shadowBlur = 8;
+      ctx.fillText('MAKERS CO', CX, CY + RX * 0.85);
+      ctx.restore();
+
+      // Thin rule above text
+      ctx.save();
+      ctx.strokeStyle = 'rgba(201,169,98,0.3)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(CX - 46, CY + RX * 0.72);
+      ctx.lineTo(CX + 46, CY + RX * 0.72);
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+
+  // 2. Deep Space Blue
+  {
+    name: 'Deep Space',
+    draw(ctx) {
+      // BG — deep midnight
+      const bg = ctx.createRadialGradient(CX, CY * 0.6, 10, CX, CY, SIZE * 0.8);
+      bg.addColorStop(0, '#0a1628');
+      bg.addColorStop(0.6, '#060c1a');
+      bg.addColorStop(1, '#020508');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Star dots
+      ctx.save();
+      const stars = [[40,30],[280,60],[60,250],[290,200],[150,20],[200,290],[30,160],[300,130]];
+      stars.forEach(([x,y]) => {
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random()*1.2+0.4, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.random()*0.4+0.2})`;
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Blue glow
+      const glow = ctx.createRadialGradient(CX, CY, 0, CX, CY, RX * 1.3);
+      glow.addColorStop(0, 'rgba(96,165,250,0.15)');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      drawRing(ctx, -30,  '#93C5FD', 2.6, 14);
+      drawRing(ctx,  50,  '#7BA7D8', 2.6, 10);
+      drawRing(ctx, 130,  '#BFDBFE', 2.6, 7);
+      drawDot(ctx, -30, -20, '#93C5FD', 4);
+      drawDot(ctx,  50, 80, '#BFDBFE', 3.5);
+      drawDot(ctx, 130, 200, '#7BA7D8', 3);
+      drawCore(ctx, '#DBEAFE', '#60A5FA', 20, '#60A5FA', 35);
+      drawLabel(ctx, 'MAKERS CO', CY + RX * 0.85, '700 13px "Space Grotesk",sans-serif', 'rgba(147,197,253,0.85)', '#60A5FA');
+    }
+  },
+
+  // 3. Obsidian White
+  {
+    name: 'Obsidian White',
+    draw(ctx) {
+      // Pure black bg with noise vignette
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Vignette
+      const vign = ctx.createRadialGradient(CX, CY, SIZE * 0.3, CX, CY, SIZE * 0.8);
+      vign.addColorStop(0, 'transparent');
+      vign.addColorStop(1, 'rgba(0,0,0,0.6)');
+      ctx.fillStyle = vign;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      drawRing(ctx, -30,  'rgba(255,255,255,0.90)', 2.4, 0);
+      drawRing(ctx,  50,  'rgba(255,255,255,0.55)', 2.4, 0);
+      drawRing(ctx, 130,  'rgba(255,255,255,0.30)', 2.4, 0);
+      drawDot(ctx, -30, -20, 'rgba(255,255,255,0.9)', 4);
+      drawDot(ctx,  50, 80, 'rgba(255,255,255,0.6)', 3.5);
+      drawDot(ctx, 130, 200, 'rgba(255,255,255,0.35)', 3);
+      drawCore(ctx, '#ffffff', 'rgba(255,255,255,0.85)', 19, null, 0);
+
+      // Clean label
+      ctx.save();
+      ctx.font = '800 12px "Space Grotesk",sans-serif';
+      ctx.textAlign = 'center';
+      ctx.letterSpacing = '0.12em';
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.fillText('MAKERS CO', CX, CY + RX * 0.85);
+      ctx.restore();
+    }
+  },
+
+  // 4. Peach Brand (most brand-accurate)
+  {
+    name: 'Brand Signature',
+    draw(ctx) {
+      // Warm dark background
+      const bg = ctx.createRadialGradient(CX, CY * 0.65, 30, CX, CY, SIZE * 0.78);
+      bg.addColorStop(0, '#1a0e08');
+      bg.addColorStop(0.55, '#0f0804');
+      bg.addColorStop(1, '#080503');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Warm peach halo
+      const halo = ctx.createRadialGradient(CX, CY, 0, CX, CY, RX * 1.5);
+      halo.addColorStop(0, 'rgba(227,154,123,0.18)');
+      halo.addColorStop(0.5, 'rgba(219,176,107,0.06)');
+      halo.addColorStop(1, 'transparent');
+      ctx.fillStyle = halo;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      drawRing(ctx, -30,  '#FFD3AC', 3.0, 16);
+      drawRing(ctx,  50,  '#FFB5AB', 3.0, 12);
+      drawRing(ctx, 130,  '#DBB06B', 3.0, 8);
+      drawDot(ctx, -30, -20, '#FFD3AC', 5);
+      drawDot(ctx,  50, 80, '#FFB5AB', 4);
+      drawDot(ctx, 130, 200, '#DBB06B', 3.5);
+      drawCore(ctx, '#FFD3AC', '#E39A7B', 22, '#E39A7B', 40);
+      drawLabel(ctx, 'MAKERS CO', CY + RX * 0.85, '700 14px "Space Grotesk",sans-serif', '#E39A7B', '#E39A7B');
+
+      // Tagline
+      ctx.save();
+      ctx.font = '500 9px "Space Grotesk",sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(219,176,107,0.5)';
+      ctx.fillText('WE BUILD · YOU GROW', CX, CY + RX * 1.08);
+      ctx.restore();
+    }
+  },
+
+  // 5. Aurora (premium gradient rings)
+  {
+    name: 'Aurora Premium',
+    draw(ctx) {
+      // Very dark green-black
+      const bg = ctx.createRadialGradient(CX, CY*0.6, 20, CX, CY, SIZE*0.8);
+      bg.addColorStop(0, '#091512');
+      bg.addColorStop(0.6, '#050c0a');
+      bg.addColorStop(1, '#020604');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // Aurora glow layers
+      [[CX-40, CY-20, '#4ade80', 0.09],
+       [CX+40, CY-30, '#a78bfa', 0.08],
+       [CX,    CY+40, '#34d399', 0.06]].forEach(([x,y,c,a]) => {
+        const g = ctx.createRadialGradient(x, y, 10, x, y, RX * 1.1);
+        g.addColorStop(0, c.replace(')', `,${a})`).replace('rgb', 'rgba'));
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, SIZE, SIZE);
+      });
+
+      drawRing(ctx, -30,  '#86efac', 2.6, 18);
+      drawRing(ctx,  50,  '#c4b5fd', 2.6, 14);
+      drawRing(ctx, 130,  '#6ee7b7', 2.6, 10);
+      drawDot(ctx, -30, -20, '#86efac', 4.5);
+      drawDot(ctx,  50, 80, '#c4b5fd', 4);
+      drawDot(ctx, 130, 200, '#6ee7b7', 3.5);
+      drawCore(ctx, '#d1fae5', '#34d399', 20, '#34d399', 40);
+      drawLabel(ctx, 'MAKERS CO', CY + RX * 0.85, '700 13px "Space Grotesk",sans-serif', 'rgba(134,239,172,0.85)', '#4ade80');
+    }
+  },
+
+];
+
+// ── Render all designs ──────────────────────────────────────────────────
+const grid = document.getElementById('grid');
+
+DESIGNS.forEach((design, idx) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'canvas-wrap';
+
+  const cvs = document.createElement('canvas');
+  cvs.width = SIZE;
+  cvs.height = SIZE;
+  cvs.style.width = '200px';
+  cvs.style.height = '200px';
+
+  const ctx = cvs.getContext('2d');
+  design.draw(ctx);
+
+  wrap.appendChild(cvs);
+
+  const name = document.createElement('div');
+  name.className = 'card-name';
+  name.textContent = design.name;
+
+  const btn = document.createElement('button');
+  btn.className = 'dl-btn';
+  btn.textContent = '↓ Download PNG 320×320';
+  btn.onclick = () => {
+    // Re-render at full 320px
+    const full = document.createElement('canvas');
+    full.width = SIZE;
+    full.height = SIZE;
+    const fctx = full.getContext('2d');
+    design.draw(fctx);
+    const a = document.getElementById('dl');
+    a.href = full.toDataURL('image/png');
+    a.download = `makers-co-dp-${design.name.toLowerCase().replace(/\s+/g,'-')}-320x320.png`;
+    a.click();
+  };
+
+  card.appendChild(wrap);
+  card.appendChild(name);
+  card.appendChild(btn);
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
