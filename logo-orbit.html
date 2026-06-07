@@ -149,39 +149,56 @@ h1{font-size:28px;font-weight:800;margin-bottom:8px;background:linear-gradient(1
   </div>
 </div>
 
-<!-- EXPORT -->
+<!-- EXPORT — SQUARE WORDMARK (main request) -->
 <div class="section">
-  <div class="section-title">Export PNG</div>
+  <div class="section-title">Export — Square Wordmark (Navbar size · light)</div>
+  <div class="export-grid">
+    <div class="export-btn" onclick="exportSquareWordmark(512,'dark')">
+      <span style="font-size:24px">⬛</span>
+      <span class="label">512 × 512 Square</span>
+      <span class="desc">Wordmark · dark bg</span>
+    </div>
+    <div class="export-btn" onclick="exportSquareWordmark(512,'light')">
+      <span style="font-size:24px">⬜</span>
+      <span class="label">512 × 512 Square</span>
+      <span class="desc">Wordmark · white bg</span>
+    </div>
+    <div class="export-btn" onclick="exportSquareWordmark(512,'transparent')">
+      <span style="font-size:24px">🖼️</span>
+      <span class="label">512 × 512 Square</span>
+      <span class="desc">Wordmark · transparent</span>
+    </div>
+    <div class="export-btn" onclick="exportSquareWordmark(1024,'dark')">
+      <span style="font-size:24px">⬛</span>
+      <span class="label">1024 × 1024 Square</span>
+      <span class="desc">Wordmark · dark bg (hi-res)</span>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT — ICON ONLY -->
+<div class="section">
+  <div class="section-title">Export — Orbit mark only</div>
   <div class="export-grid">
     <div class="export-btn" onclick="exportPNG(256,'transparent')">
       <span style="font-size:24px">🖼️</span>
       <span class="label">256 × 256</span>
-      <span class="desc">Transparent background</span>
+      <span class="desc">Icon · transparent</span>
     </div>
     <div class="export-btn" onclick="exportPNG(512,'transparent')">
       <span style="font-size:24px">🖼️</span>
       <span class="label">512 × 512</span>
-      <span class="desc">Transparent background</span>
-    </div>
-    <div class="export-btn" onclick="exportPNG(256,'dark')">
-      <span style="font-size:24px">⬛</span>
-      <span class="label">256 × 256</span>
-      <span class="desc">Dark background</span>
+      <span class="desc">Icon · transparent</span>
     </div>
     <div class="export-btn" onclick="exportPNG(512,'dark')">
       <span style="font-size:24px">⬛</span>
       <span class="label">512 × 512</span>
-      <span class="desc">Dark background</span>
-    </div>
-    <div class="export-btn" onclick="exportPNG(256,'light')">
-      <span style="font-size:24px">⬜</span>
-      <span class="label">256 × 256</span>
-      <span class="desc">White background</span>
+      <span class="desc">Icon · dark bg</span>
     </div>
     <div class="export-btn" onclick="exportSVG()">
       <span style="font-size:24px">📐</span>
-      <span class="label">SVG file</span>
-      <span class="desc">Vector — infinitely scalable</span>
+      <span class="label">SVG vector</span>
+      <span class="desc">Infinitely scalable</span>
     </div>
   </div>
   <canvas id="cvs" style="display:none"></canvas>
@@ -189,34 +206,87 @@ h1{font-size:28px;font-weight:800;margin-bottom:8px;background:linear-gradient(1
 </div>
 
 <script>
-const SVG_STATIC = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
-  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.2" fill="none" transform="rotate(-30 30 30)"/>
-  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.2" fill="none" transform="rotate(50 30 30)"/>
-  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.2" fill="none" transform="rotate(130 30 30)"/>
-  <circle cx="30" cy="30" r="6" fill="#E39A7B"/>
-  <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
+// Static orbit mark SVG (snapshot for canvas rendering)
+const ORBIT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.4" fill="none" transform="rotate(-30 30 30)"/>
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.4" fill="none" transform="rotate(50 30 30)"/>
+  <ellipse cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.4" fill="none" transform="rotate(130 30 30)"/>
+  <circle cx="30" cy="30" r="6.5" fill="#E39A7B"/>
+  <circle cx="30" cy="30" r="3.8" fill="#FFD3AC"/>
 </svg>`;
 
-function exportPNG(size, bg) {
+// ── Square Wordmark Export ─────────────────────────────────────────
+// Renders: orbit icon (top-center) + "Makers Co" + tagline in a square canvas
+function exportSquareWordmark(size, bg) {
   const cvs = document.getElementById('cvs');
   cvs.width = size;
   cvs.height = size;
   const ctx = cvs.getContext('2d');
   ctx.clearRect(0, 0, size, size);
 
-  if (bg === 'dark') {
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, size, size);
-  } else if (bg === 'light') {
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(0, 0, size, size);
-  }
+  const isDark = bg === 'dark';
+  const isLight = bg === 'light';
 
-  const svgBlob = new Blob([SVG_STATIC], {type:'image/svg+xml;charset=utf-8'});
+  // Background
+  if (isDark) { ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, size, size); }
+  else if (isLight) { ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, size, size); }
+
+  // Text colors
+  const nameColor  = isDark ? '#f8fafc' : '#0f172a';
+  const tagColor   = '#E39A7B';
+
+  const svgBlob = new Blob([ORBIT_SVG], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+
+  img.onload = () => {
+    const scale = size / 512;
+
+    // Orbit icon — centered, upper area
+    const iconSize = 180 * scale;
+    const iconX = (size - iconSize) / 2;
+    const iconY = size * 0.18;
+    ctx.drawImage(img, iconX, iconY, iconSize, iconSize);
+
+    // "Makers Co" text
+    const fontSize = Math.round(72 * scale);
+    ctx.font = `800 ${fontSize}px "Space Grotesk", "Inter", sans-serif`;
+    ctx.fillStyle = nameColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Makers Co', size / 2, size * 0.62);
+
+    // Tagline
+    const tagSize = Math.round(28 * scale);
+    ctx.font = `600 ${tagSize}px "Inter", sans-serif`;
+    ctx.fillStyle = tagColor;
+    ctx.letterSpacing = `${3 * scale}px`;
+    ctx.fillText('WE BUILD · YOU GROW', size / 2, size * 0.76);
+
+    // Download
+    const a = document.getElementById('dl-link');
+    a.href = cvs.toDataURL('image/png');
+    a.download = `makers-co-orbit-wordmark-${size}x${size}-${bg}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+}
+
+// ── Icon-only PNG Export ───────────────────────────────────────────
+function exportPNG(size, bg) {
+  const cvs = document.getElementById('cvs');
+  cvs.width = size; cvs.height = size;
+  const ctx = cvs.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+
+  if (bg === 'dark') { ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, size, size); }
+  else if (bg === 'light') { ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, size, size); }
+
+  const svgBlob = new Blob([ORBIT_SVG], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(svgBlob);
   const img = new Image();
   img.onload = () => {
-    // Draw with padding
     const pad = size * 0.1;
     ctx.drawImage(img, pad, pad, size - pad*2, size - pad*2);
     const a = document.getElementById('dl-link');
@@ -229,7 +299,7 @@ function exportPNG(size, bg) {
 }
 
 function exportSVG() {
-  const blob = new Blob([SVG_STATIC], {type:'image/svg+xml'});
+  const blob = new Blob([ORBIT_SVG], {type:'image/svg+xml'});
   const a = document.getElementById('dl-link');
   a.href = URL.createObjectURL(blob);
   a.download = 'makers-co-orbit.svg';

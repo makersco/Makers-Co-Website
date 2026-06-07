@@ -152,10 +152,8 @@ img{max-width:100%;display:block}
   flex-shrink:0;
 }
 .nav-logo-mark{
-  width:34px;height:34px;
-  background:var(--grad);border-radius:10px;
+  width:36px;height:36px;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;color:#fff;
   transition:transform .3s;
 }
 .nav-logo:hover .nav-logo-mark{transform:rotate(-8deg) scale(1.08)}
@@ -750,6 +748,10 @@ footer{padding:56px 0 40px;border-top:1px solid var(--border)}
       .mkr-orbit .ring2{transform:rotate(50deg)}
       .mkr-orbit .ring3{transform:rotate(130deg)}
     }
+    
+    .mkr-orbit .dot1{transform-origin:30px 30px;animation:mkr-spin1 8s linear infinite}
+    .mkr-orbit .dot2{transform-origin:30px 30px;animation:mkr-spin2 12s linear infinite reverse}
+    .mkr-orbit .dot3{transform-origin:30px 30px;animation:mkr-spin3 10s linear infinite}
     </style>
 </head>
 <body>
@@ -801,12 +803,15 @@ footer{padding:56px 0 40px;border-top:1px solid var(--border)}
 <nav id="nav">
   <a href="#home" class="nav-logo">
     <div class="nav-logo-mark">
-      <svg class="mkr-orbit" viewBox="0 0 60 60" width="24" height="24" fill="none">
-          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.8" fill="none"/>
-          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.8" fill="none"/>
-          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.8" fill="none"/>
-          <circle class="core-outer" cx="30" cy="30" r="7" fill="#E39A7B"/>
-          <circle cx="30" cy="30" r="4" fill="#FFD3AC"/>
+      <svg class="mkr-orbit" viewBox="0 0 60 60" width="36" height="36" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.4" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.4" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.4" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6.5" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.8" fill="#FFD3AC"/>
+          <g class="dot1"><circle cx="50" cy="30" r="2.2" fill="#FFD3AC"/></g>
+          <g class="dot2"><circle cx="50" cy="30" r="1.8" fill="#FFB5AB"/></g>
+          <g class="dot3"><circle cx="50" cy="30" r="1.5" fill="#DBB06B"/></g>
         </svg>
     </div>
     <span>Makers Co</span>
@@ -1473,12 +1478,12 @@ footer{padding:56px 0 40px;border-top:1px solid var(--border)}
   <div class="container">
     <div class="foot-inner">
       <a href="#home" class="foot-logo">
-        <div class="foot-logo-mark"><svg class="mkr-orbit" viewBox="0 0 60 60" width="20" height="20" fill="none">
-          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.85)" stroke-width="2.8" fill="none"/>
-          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.55)" stroke-width="2.8" fill="none"/>
-          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="rgba(255,255,255,.4)" stroke-width="2.8" fill="none"/>
-          <circle class="core-outer" cx="30" cy="30" r="7" fill="rgba(255,255,255,.8)"/>
-          <circle cx="30" cy="30" r="4" fill="#fff"/>
+        <div class="foot-logo-mark"><svg class="mkr-orbit" viewBox="0 0 60 60" width="24" height="24" fill="none">
+          <ellipse class="ring1" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFD3AC" stroke-width="2.4" fill="none"/>
+          <ellipse class="ring2" cx="30" cy="30" rx="20" ry="7.5" stroke="#FFB5AB" stroke-width="2.4" fill="none"/>
+          <ellipse class="ring3" cx="30" cy="30" rx="20" ry="7.5" stroke="#DBB06B" stroke-width="2.4" fill="none"/>
+          <circle class="core-outer" cx="30" cy="30" r="6" fill="#E39A7B"/>
+          <circle cx="30" cy="30" r="3.5" fill="#FFD3AC"/>
         </svg></div>
         <span>Makers Co</span>
       </a>
